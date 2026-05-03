@@ -24,7 +24,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(builder);
 
-        // ── Sud ───────────────────────────────────────────────────────────────
         builder.Entity<Sud>(e =>
         {
             e.HasKey(x => x.SudID);
@@ -34,7 +33,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
             e.Property(x => x.KratakPuniNaziv).HasMaxLength(255);
         });
 
-        // ── Preduzece ─────────────────────────────────────────────────────────
         builder.Entity<Preduzece>(e =>
         {
             e.HasKey(x => x.PreduzeceID);
@@ -45,7 +43,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
             e.Property(x => x.PIB).HasMaxLength(255);
         });
 
-        // ── Duznik ────────────────────────────────────────────────────────────
         builder.Entity<Duznik>(e =>
         {
             e.HasKey(x => x.DuznikID);
@@ -69,7 +66,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
              .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // ── Klijent ───────────────────────────────────────────────────────────
         builder.Entity<Klijent>(e =>
         {
             e.HasKey(x => x.KlijentID);
@@ -87,7 +83,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
             e.Property(x => x.PDVStopa).HasColumnType("decimal(15,3)");
         });
 
-        // ── KontniPlan ────────────────────────────────────────────────────────
         builder.Entity<KontniPlan>(e =>
         {
             e.HasKey(x => x.KontoBroj);
@@ -95,7 +90,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
             e.Property(x => x.Naziv).HasMaxLength(255);
         });
 
-        // ── PodrazumijevanaAdvokatskaTarifa ───────────────────────────────────
         builder.Entity<PodrazumijevanaAdvokatskaTarifa>(e =>
         {
             e.HasKey(x => x.Id);
@@ -110,7 +104,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
              .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // ── PravaPristupaKlijent ──────────────────────────────────────────────
         builder.Entity<PravaPristupaKlijent>(e =>
         {
             e.HasKey(x => new { x.UserName, x.KlijentID });
@@ -121,16 +114,8 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
              .WithMany()
              .HasForeignKey(u => u.KlijentID)
              .OnDelete(DeleteBehavior.Cascade);
-
-            // -> AspNetUsers
-            e.HasOne<IdentityUser>()
-             .WithMany()
-             .HasForeignKey(u => u.UserName)
-             .HasPrincipalKey(u => u.UserName)
-             .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ── Partija ───────────────────────────────────────────────────────────
         builder.Entity<Partija>(e =>
         {
             e.HasKey(x => x.PartijaID);
