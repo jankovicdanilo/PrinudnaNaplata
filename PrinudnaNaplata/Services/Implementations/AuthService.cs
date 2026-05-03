@@ -113,7 +113,7 @@ namespace PrinudnaNaplata.Services.Implementations
                 );
         }
 
-        private async Task<List<string>> GetLegacyRolesAsync(string userId)
+        private async Task<List<string>> GetLegacyRolesAsync(Guid userId)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             using var connection = new SqlConnection(connectionString);
@@ -122,7 +122,7 @@ namespace PrinudnaNaplata.Services.Implementations
                 (
                     @"SELECT r.RoleName
                       FROM aspnet_Roles r
-                      JOIN aspnet_UserInRoles ur on ur.RoleId = r.RoleId
+                      JOIN aspnet_UsersInRoles ur on ur.RoleId = r.RoleId
                       WHERE ur.UserId = @userId",
                     new {userId}
                 );

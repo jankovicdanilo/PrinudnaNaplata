@@ -3,7 +3,7 @@
     public class LegacyUser
     {
         public string UserName { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         public string Password { get; set; } = string.Empty;
         public int PasswordFormat { get; set; }
         public string PasswordSalt { get; set; } = string.Empty;
