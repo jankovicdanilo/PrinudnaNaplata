@@ -1,0 +1,52 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+ 
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+ 
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+ 
+# ASP.NET Core
+**/appsettings.Development.json
+**/appsettings.Local.json
+ 
+# User Secrets (already stored outside project, but just in case)
+secrets.json
+**/secrets.json
+ 
+# dotnet
+project.lock.json
+project.fragment.lock.json
+artifacts/
+ 
+# OS
+.DS_Store
+Thumbs.db
+ 
+# Rider
+.idea/
+ 
+# Publish
+**/publish/
+**/PublishProfiles/

@@ -1,0 +1,6 @@
+@PrinudnaNaplata_HostAddress = http://localhost:5284
+
+GET {{PrinudnaNaplata_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
