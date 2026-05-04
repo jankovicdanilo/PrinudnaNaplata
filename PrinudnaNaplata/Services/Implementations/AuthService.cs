@@ -7,7 +7,6 @@ using PrinudnaNaplata.Models.Dtos.Auth;
 using PrinudnaNaplata.Models.Dtos.OldAspNet;
 using PrinudnaNaplata.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.Intrinsics.Arm;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;

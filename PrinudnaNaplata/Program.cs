@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PrinudnaNaplata.Data;
+using PrinudnaNaplata.Repositories.Implementations;
+using PrinudnaNaplata.Repositories.Interfaces;
 using PrinudnaNaplata.Services.Implementations;
 using PrinudnaNaplata.Services.Interfaces;
 using System.Text;
@@ -13,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDebtorRepository, DebtorRepository>();
+builder.Services.AddScoped<IDebtorService, DebtorService>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

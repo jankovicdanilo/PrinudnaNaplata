@@ -1,4 +1,4 @@
-﻿namespace VehicleRegistrationSystem.Results
+﻿namespace PrinudnaNaplata.Results
 {
     public class Result<T>
     {
@@ -34,6 +34,5 @@
                 Errors = errors.ToList()
             };
         }
-
     }
 }

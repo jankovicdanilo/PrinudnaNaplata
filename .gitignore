@@ -31,7 +31,7 @@ bld/
 **/appsettings.Development.json
 **/appsettings.Local.json
  
-# User Secrets (already stored outside project, but just in case)
+#User Secrets (already stored outside project, but just in case)
 secrets.json
 **/secrets.json
  
