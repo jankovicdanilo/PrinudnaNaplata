@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace PrinudnaNaplata.Domain;
 
 public class Duznik
@@ -21,4 +23,13 @@ public class Duznik
     public string? Vozila { get; set; }
     public string? BrojeviRacuna { get; set; }
     public string? Prebivaliste { get; set; }
+
+    [NotMapped]
+    public decimal? UkupnoDugovanje {  get; set; }
+    [NotMapped]
+    public string? ZaposlenKod { get; set; }
+    [NotMapped]
+    public DateTime? DugOd {  get; set; }
+    [NotMapped]
+    public DateTime? DugDo { get; set; }
 }

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PrinudnaNaplata.Data;
+using FluentValidation;
 using PrinudnaNaplata.Repositories.Implementations;
 using PrinudnaNaplata.Repositories.Interfaces;
 using PrinudnaNaplata.Services.Implementations;
 using PrinudnaNaplata.Services.Interfaces;
+using PrinudnaNaplata.Validators;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDebtorRepository, DebtorRepository>();
 builder.Services.AddScoped<IDebtorService, DebtorService>();
 
+builder.Services.AddValidatorsFromAssemblyContaining<DebtorFilterValidator>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;

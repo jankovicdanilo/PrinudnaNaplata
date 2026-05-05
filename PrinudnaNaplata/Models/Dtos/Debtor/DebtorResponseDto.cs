@@ -1,4 +1,6 @@
-﻿namespace PrinudnaNaplata.Models.Dtos.Debtor
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PrinudnaNaplata.Models.Dtos.Debtor
 {
     public class DebtorResponseDto
     {
@@ -21,5 +23,9 @@
         public string? Vozila { get; set; }
         public string? BrojeviRacuna { get; set; }
         public string? Prebivaliste { get; set; }
+        public decimal? UkupnoDugovanje { get; set; }
+        public string? ZaposlenKod { get; set; }
+        public DateTime? DugOd { get; set; }
+        public DateTime? DugDo { get; set; }
     }
 }

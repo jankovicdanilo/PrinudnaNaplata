@@ -15,16 +15,9 @@ namespace PrinudnaNaplata.Services.Implementations
             this.debtorRepository = debtorRepository;
         }
 
-        public async Task<Result<List<DebtorResponseDto>>> GetAllAsync
-                        (bool? nepoznat = null,
-                        bool? umro = null, bool? penzioner = null,
-                        bool? pravnoLice = null, decimal? ukupanDug = null,
-                        decimal? AdvTarifa = null, decimal? SudskeTakse = null,
-                        DateTime? dugOd = null, DateTime? dugDo = null,
-                        string? searchQuery = null, int pageNumber = 1,
-                        int pageSize = 10)
+        public async Task<Result<List<DebtorResponseDto>>> GetAllAsync(DebtorFilterDto filter)
         {
-            var debtorsDomain = await debtorRepository.GetAllAsync();
+            var debtorsDomain = await debtorRepository.GetAllAsync(filter);
 
             var result = new List<DebtorResponseDto>();
 
@@ -50,7 +43,11 @@ namespace PrinudnaNaplata.Services.Implementations
                     Oznacen = debtor.Oznacen,
                     Vozila = debtor.Vozila,
                     BrojeviRacuna = debtor.BrojeviRacuna,
-                    Prebivaliste = debtor.Prebivaliste
+                    Prebivaliste = debtor.Prebivaliste,
+                    UkupnoDugovanje = debtor.UkupnoDugovanje,
+                    DugOd = debtor.DugOd,
+                    DugDo = debtor.DugDo,
+                    ZaposlenKod = debtor.ZaposlenKod
                 });
             }
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrinudnaNaplata.Models.Dtos.Debtor;
 using PrinudnaNaplata.Services.Interfaces;
+using PrinudnaNaplata.Validators;
 
 namespace PrinudnaNaplata.Controllers
 {
@@ -10,23 +12,26 @@ namespace PrinudnaNaplata.Controllers
     public class DebtorController : ControllerBase
     {
         private readonly IDebtorService debtorService;
+        private readonly DebtorFilterValidator debtorFilterValidator;
 
-        public DebtorController(IDebtorService debtorService)
+        public DebtorController(IDebtorService debtorService, DebtorFilterValidator debtorFilterValidator)
         {
             this.debtorService = debtorService;
+            this.debtorFilterValidator = debtorFilterValidator;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAllAsync(bool? nepoznat = null,
-                        bool? umro = null, bool? penzioner = null,
-                        bool? pravnoLice = null, decimal? ukupanDug = null,
-                        decimal? AdvTarifa = null, decimal? SudskeTakse = null,
-                        DateTime? dugOd = null, DateTime? dugDo = null,
-                        string? searchQuery = null, int pageNumber = 1,
-                        int pageSize = 10)
+        public async Task<IActionResult> GetAllAsync([FromQuery] DebtorFilterDto filter)
         {
-            var result = await debtorService.GetAllAsync();
+            var validationResult = await debtorFilterValidator.ValidateAsync(filter);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+            var result = await debtorService.GetAllAsync(filter);
 
             return Ok(result);
         }
