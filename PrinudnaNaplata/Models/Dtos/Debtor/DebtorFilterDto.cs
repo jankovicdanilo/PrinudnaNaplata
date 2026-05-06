@@ -17,8 +17,6 @@
         public bool? Penzioner { get; set; } = null;
         public bool? PravnoLice { get; set; } = null;
         public decimal? UkupanDug { get; set; } = null;
-        public decimal? AdvTarifa { get; set; } = null;
-        public decimal? SudskeTakse { get; set; } = null;
         public DateTime? DugOd { get; set; } = null;
         public DateTime? DugDo { get; set; } = null;
     }

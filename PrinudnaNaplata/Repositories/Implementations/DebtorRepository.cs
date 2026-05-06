@@ -25,10 +25,21 @@ namespace PrinudnaNaplata.Repositories.Implementations
 
             var offset = (filter.PageNumber - 1) * filter.PageSize;
 
-            var sql = @"WITH Filtered as(
-	                        SELECT
+            var sql = @"WITH Dugovanja AS (
+                            SELECT 
+                                DuznikID,
+                                SUM(COALESCE(IznosPoPrigovoru, IznosDuga, 0))
+                                + SUM(COALESCE(ATPoPrigovoru, AdvTarifa, 0))
+                                + SUM(COALESCE(TaksaPoPrigovoru, SudskeTakse, 0)) as UkupnoDugovanje,
+                                MIN(DugOd) as DugOd,
+                                MAX(DugDo) as DugDo
+                            FROM Partije
+                            GROUP BY DuznikID
+                        ),
+                        Filtered AS (
+                            SELECT
                                 d.DuznikID,
-		                        d.ZavedenKodPov,
+                                d.ZavedenKodPov,
                                 d.Ime,
                                 d.Mjesto,
                                 d.Adresa,
@@ -47,78 +58,56 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 d.Prebivaliste,
                                 preduzeca.PreduzeceID,
                                 preduzeca.Naziv as ZaposlenKod,
-                                partije.PartijaID,
-                                partije.DugOd,
-                                partije.DugDo,
-                                (SELECT SUM(COALESCE(p.IznosPoPrigovoru, p.IznosDuga, 0))
-                                  + SUM(COALESCE(p.ATPoPrigovoru, p.AdvTarifa, 0))
-                                  + SUM(COALESCE(p.DodatniAT, 0))
-                                  + SUM(COALESCE(p.TaksaPoPrigovoru, p.SudskeTakse, 0))
-                             FROM Partije p
-                             WHERE p.DuznikID = d.DuznikID) as UkupnoDugovanje
-		                    FROM Duznici d 
-		                    LEFT JOIN Preduzeca preduzeca ON d.PreduzeceID = preduzeca.PreduzeceID
-		                    JOIN Partije partije ON partije.DuznikID = d.DuznikID
-		                    WHERE
-                                ((@ime IS NULL OR @ime = '' OR d.Ime LIKE '%' + @ime + '%' 
-                                COLLATE Latin1_General_CI_AI) AND
-                                (@mjesto IS NULL OR @mjesto = '' OR d.Mjesto LIKE '%' + @mjesto + '%' 
-                                COLLATE Latin1_General_CI_AI) AND
-                                (@reon IS NULL OR @reon = '' OR d.Reon LIKE '%' + @reon + '%' 
-                                COLLATE Latin1_General_CI_AI) AND 
-                                (@adresa IS NULL OR @adresa = '' OR d.Adresa LIKE '%' + @adresa + '%' 
-                                COLLATE Latin1_General_CI_AI) AND
-                                (@jmbg IS NULL OR @jmbg = '' OR d.JMBG LIKE '%' + @jmbg + '%' 
-                                COLLATE Latin1_General_CI_AI) AND
-                                (@licniBroj IS NULL OR @licniBroj = '' OR d.LicniBroj LIKE '%' + @licniBroj + '%' 
-                                COLLATE Latin1_General_CI_AI) AND
-                                (@naziv is NULL or @naziv = '' OR preduzeca.naziv LIKE '%' + @naziv + '%') AND
-                                (@zavedenkodpov IS NULL OR @zavedenkodpov = '' OR d.ZavedenKodPov LIKE '%' + 
-                                @zavedenkodpov + '%' COLLATE Latin1_General_CI_AI) AND
-			                    (@nepoznat IS NULL OR @nepoznat = d.Nepoznat) AND
-			                    (@umro IS NULL OR @umro = d.Umro) AND
-			                    (@penzioner IS NULL OR @penzioner = d.Penzioner) AND
-			                    (@pravnoLice IS NULL OR @pravnoLice = d.PravnoLice) AND
-			                    (@ukupanDug IS NULL OR (
-                                SELECT SUM(COALESCE(p.IznosPoPrigovoru, p.IznosDuga, 0))
-                                     + SUM(COALESCE(p.ATPoPrigovoru, p.AdvTarifa, 0))
-                                     + SUM(COALESCE(p.DodatniAT, 0))
-                                     + SUM(COALESCE(p.TaksaPoPrigovoru, p.SudskeTakse, 0))
-                                FROM Partije p
-                                WHERE p.DuznikID = d.DuznikID) >= @ukupanDug) AND
-			                    (@AdvTarifa IS NULL OR partije.AdvTarifa >= @AdvTarifa) AND
-			                    (@SudskeTakse IS NULL OR partije.SudskeTakse >= @SudskeTakse) AND
-			                    (@dugOd IS NULL OR partije.DugOd >= @dugOd) AND
-			                    (@dugDo IS NULL OR partije.DugDo <= @dugDo)))
-
-	                        SELECT	
-                                DuznikID,
-			                    ZavedenKodPov,
-                                ZaposlenKod,
-			                    Ime,
-			                    Mjesto,
-			                    Adresa,
-			                    JMBG,
-			                    RegBr,
-			                    LicniBroj,
-			                    Nepoznat,
-			                    Umro,
-			                    Penzioner,
-			                    Reon,
-			                    Nekretnina,
-			                    PravnoLice,
-			                    Oznacen,
-			                    Vozila,
-			                    BrojeviRacuna,
-			                    Prebivaliste,
-			                    PreduzeceID,
-			                    PartijaID,
-			                    DugOd,
-			                    DugDo,
-			                    UkupnoDugovanje
-	                        FROM Filtered
-	                        ORDER BY Ime
-	                        offset @offset rows fetch next @pageSize rows only;";
+                                dug.DugOd,
+                                dug.DugDo,
+                                dug.UkupnoDugovanje
+                            FROM Duznici d
+                            LEFT JOIN Preduzeca preduzeca ON d.PreduzeceID = preduzeca.PreduzeceID
+                            LEFT JOIN Dugovanja dug ON dug.DuznikID = d.DuznikID
+                            WHERE
+                                (@ime IS NULL OR @ime = '' OR d.Ime LIKE '%' + @ime + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@mjesto IS NULL OR @mjesto = '' OR d.Mjesto LIKE '%' + @mjesto + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@reon IS NULL OR @reon = '' OR d.Reon LIKE '%' + @reon + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@adresa IS NULL OR @adresa = '' OR d.Adresa LIKE '%' + @adresa + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@jmbg IS NULL OR @jmbg = '' OR d.JMBG LIKE '%' + @jmbg + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@licniBroj IS NULL OR @licniBroj = '' OR d.LicniBroj LIKE '%' + @licniBroj + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@naziv IS NULL OR @naziv = '' OR preduzeca.Naziv LIKE '%' + @naziv + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@zavedenkodpov IS NULL OR @zavedenkodpov = '' OR d.ZavedenKodPov LIKE '%' + @zavedenkodpov + '%' COLLATE Latin1_General_CI_AI) AND
+                                (@nepoznat IS NULL OR @nepoznat = d.Nepoznat) AND
+                                (@umro IS NULL OR @umro = d.Umro) AND
+                                (@penzioner IS NULL OR @penzioner = d.Penzioner) AND
+                                (@pravnoLice IS NULL OR @pravnoLice = d.PravnoLice) AND
+                                (@ukupanDug IS NULL OR dug.UkupnoDugovanje >= @ukupanDug) AND
+                                (@dugOd IS NULL OR dug.DugOd >= @dugOd) AND
+                                (@dugDo IS NULL OR dug.DugDo <= @dugDo)
+                        )
+                        SELECT
+                            DuznikID,
+                            ZavedenKodPov,
+                            ZaposlenKod,
+                            Ime,
+                            Mjesto,
+                            Adresa,
+                            JMBG,
+                            RegBr,
+                            LicniBroj,
+                            Nepoznat,
+                            Umro,
+                            Penzioner,
+                            Reon,
+                            Nekretnina,
+                            PravnoLice,
+                            Oznacen,
+                            Vozila,
+                            BrojeviRacuna,
+                            Prebivaliste,
+                            PreduzeceID,
+                            DugOd,
+                            DugDo,
+                            UkupnoDugovanje
+                        FROM Filtered
+                        ORDER BY Ime
+                        OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
             var result = await connection.QueryAsync<Duznik>(sql, new
             {
@@ -134,9 +123,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 umro = filter.Umro,
                 penzioner = filter.Penzioner,
                 pravnoLice = filter.PravnoLice,
-                filter.SudskeTakse,
                 ukupanDug = filter.UkupanDug,
-                AdvTarifa = filter.AdvTarifa,
                 dugOd = filter.DugOd,
                 dugDo = filter.DugDo,
                 offset,

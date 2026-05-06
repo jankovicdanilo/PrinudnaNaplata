@@ -10,8 +10,6 @@ namespace PrinudnaNaplata.Validators
             RuleFor(x => x.PageNumber).GreaterThanOrEqualTo(1);
             RuleFor(x => x.PageSize).GreaterThanOrEqualTo(1).LessThanOrEqualTo(100);
             RuleFor(x => x.UkupanDug).GreaterThanOrEqualTo(0).When(x => x.UkupanDug.HasValue);
-            RuleFor(x => x.AdvTarifa).GreaterThanOrEqualTo(0).When(x => x.AdvTarifa.HasValue);
-            RuleFor(x => x.SudskeTakse).GreaterThanOrEqualTo(0).When(x => x.SudskeTakse.HasValue);
             RuleFor(x => x.DugOd).LessThanOrEqualTo(x => x.DugDo).When(x => x.DugOd.HasValue && x.DugDo.HasValue);
         }
     }
