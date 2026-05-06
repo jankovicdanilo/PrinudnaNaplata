@@ -50,10 +50,15 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 partije.PartijaID,
                                 partije.DugOd,
                                 partije.DugDo,
-                                (partije.IznosDuga + partije.SudskeTakse) as UkupnoDugovanje
+                                (SELECT SUM(COALESCE(p.IznosPoPrigovoru, p.IznosDuga, 0))
+                                  + SUM(COALESCE(p.ATPoPrigovoru, p.AdvTarifa, 0))
+                                  + SUM(COALESCE(p.DodatniAT, 0))
+                                  + SUM(COALESCE(p.TaksaPoPrigovoru, p.SudskeTakse, 0))
+                             FROM Partije p
+                             WHERE p.DuznikID = d.DuznikID) as UkupnoDugovanje
 		                    FROM Duznici d 
 		                    LEFT JOIN Preduzeca preduzeca ON d.PreduzeceID = preduzeca.PreduzeceID
-		                    LEFT JOIN Partije partije ON partije.DuznikID = d.DuznikID
+		                    JOIN Partije partije ON partije.DuznikID = d.DuznikID
 		                    WHERE
                                 ((@ime IS NULL OR @ime = '' OR d.Ime LIKE '%' + @ime + '%' 
                                 COLLATE Latin1_General_CI_AI) AND
@@ -74,7 +79,13 @@ namespace PrinudnaNaplata.Repositories.Implementations
 			                    (@umro IS NULL OR @umro = d.Umro) AND
 			                    (@penzioner IS NULL OR @penzioner = d.Penzioner) AND
 			                    (@pravnoLice IS NULL OR @pravnoLice = d.PravnoLice) AND
-			                    (@ukupanDug IS NULL OR (partije.IznosDuga + partije.SudskeTakse) >= @ukupanDug) AND
+			                    (@ukupanDug IS NULL OR (
+                                SELECT SUM(COALESCE(p.IznosPoPrigovoru, p.IznosDuga, 0))
+                                     + SUM(COALESCE(p.ATPoPrigovoru, p.AdvTarifa, 0))
+                                     + SUM(COALESCE(p.DodatniAT, 0))
+                                     + SUM(COALESCE(p.TaksaPoPrigovoru, p.SudskeTakse, 0))
+                                FROM Partije p
+                                WHERE p.DuznikID = d.DuznikID) >= @ukupanDug) AND
 			                    (@AdvTarifa IS NULL OR partije.AdvTarifa >= @AdvTarifa) AND
 			                    (@SudskeTakse IS NULL OR partije.SudskeTakse >= @SudskeTakse) AND
 			                    (@dugOd IS NULL OR partije.DugOd >= @dugOd) AND
