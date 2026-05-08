@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace PrinudnaNaplata.Domain;
 
 public class Partija
@@ -91,4 +93,7 @@ public class Partija
     public bool Hipoteka { get; set; }
 
     public string? Napomena { get; set; }
+
+    [NotMapped]
+    public string? DuznikIme { get; set; }
 }

@@ -19,6 +19,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDebtorRepository, DebtorRepository>();
 builder.Services.AddScoped<IDebtorService, DebtorService>();
+builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+builder.Services.AddScoped<ICaseService, CaseService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<DebtorFilterValidator>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
