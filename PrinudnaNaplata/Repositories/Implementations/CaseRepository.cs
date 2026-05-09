@@ -120,7 +120,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     DonetoDana,
                                     SudskeTakse
                                 FROM Filtered
-                                Order By BrojPartije
+                                Order By PartijaID
                                 OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
             var result = await connection.QueryAsync<CaseListItemDto>(sql,new

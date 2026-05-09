@@ -106,7 +106,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                             DugDo,
                             UkupnoDugovanje
                         FROM Filtered
-                        ORDER BY Ime
+                        ORDER BY ZavedenKodPov
                         OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
             var result = await connection.QueryAsync<Duznik>(sql, new
