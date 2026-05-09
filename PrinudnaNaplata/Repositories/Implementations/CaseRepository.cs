@@ -16,7 +16,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<List<Partija>> GetAllAsync(CaseFilterDto filter)
+        public async Task<List<CaseListItemDto>> GetAllAsync(CaseFilterDto filter)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -59,8 +59,10 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     Partije.RBroj LIKE '%' + @ResenjeBroj + '%' COLLATE Latin1_General_CI_AI
                                     ) AND
                                     (@Ime IS NULL OR @Ime = '' OR duznik.Ime LIKE '%' + @Ime + '%' COLLATE Latin1_General_CI_AI) AND
-                                    (@Zaposlen IS NULL OR @Zaposlen = '' OR preduzeca.Naziv LIKE '%' + @Zaposlen + '%' COLLATE Latin1_General_CI_AI) AND
-                                    (@SudID IS NULL OR partije.SudID = @SudID OR partije.Sud1ID = @SudID) AND
+                                    (@Zaposlen IS NULL OR @Zaposlen = '' OR preduzeca.Naziv LIKE '%' + @Zaposlen + 
+                                    '%' COLLATE Latin1_General_CI_AI) AND
+                                    (@NadlezniOrgan IS NULL OR @NadlezniOrgan = '' OR sud.Naziv like '%' +
+                                    @NadlezniOrgan + '%' COLLATE Latin1_General_CI_AI) AND
                                     (@PredatoDanaOd IS NULL OR partije.PredatoDana >= @PredatoDanaOd) AND
                                     (@PredatoDanaDo IS NULL OR partije.PredatoDana <= @PredatoDanaDo) AND
                                     (@DonetoDanaOd IS NULL OR partije.DonetoDana >= @DonetoDanaOd) AND
@@ -121,20 +123,20 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 Order By BrojPartije
                                 OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
-            var result = await connection.QueryAsync<Partija>(sql,new
+            var result = await connection.QueryAsync<CaseListItemDto>(sql,new
             {
                 pageSize = filter.PageSize,
                 offset,
                 BrojPartije = filter.BrojPartije,
                 ResenjeBroj = filter.ResenjeBroj,
-                Ime = filter.Ime,
-                SudID = filter.SudID,
+                Ime = filter.ImeDuznika,
+                NadlezniOrgan = filter.NadlezniOrgan,
                 PredatoDanaOd = filter.PredatoDanaOd,
                 PredatoDanaDo = filter.PredatoDanaDo,
                 DonetoDanaOd = filter.DonetoDanaOd,
                 DonetoDanaDo = filter.DonetoDanaDo,
                 zavedenkodpov = filter.ZavedenKodPov,
-                pravnoLice = filter.PravnoFizicko,
+                pravnoLice = filter.PravnoLice,
                 JavnaObjava = filter.JavnaObjava,
                 Odlaganje = filter.Odlaganje,
                 OdlaganjeDo = filter.OdlaganjeDo,
@@ -145,11 +147,11 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 PrigovorUsvojen = filter.PrigovorUsvojen,
                 PrigovorOdbijen = filter.PrigovorOdbijen,
                 PrigovorOdbacen = filter.PrigovorOdbacen,
-                Fakturisano = filter.Fakturisano,
-                FakturisanoProcenat = filter.FakturisanoProcenat,
+                Fakturisano = filter.FakturisanoPovjeriocu,
+                FakturisanoProcenat = filter.FakturisanoPovjeriocuProcenat,
                 Prigovor = filter.Prigovor,
                 Popis = filter.Popis,
-                Procena = filter.Procena,
+                Procena = filter.Procjena,
                 Prodaja = filter.Prodaja,
                 NemaPokretneImovine = filter.NemaPokretneImovine,
                 Zakljucena = filter.Zakljucena,
@@ -163,13 +165,13 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 IzvrsnoDanaDo = filter.IzvrsnoDanaDo,
                 ZakljucakNalog = filter.ZakljucakNalog,
                 ZakljucakNalogNisuPostupili = filter.ZakljucakNalogNisuPostupili,
-                IzvrsenjePoPresudi = filter.IzvrsenjePoPresudi,
-                PlatioIznos = filter.PlatioIznos,
+                IzvrsenjePoPresudi = filter.IzvrsenjePoPresudiResenju,
+                PlatioIznos = filter.Uplatio,
                 Fakturisati = filter.Fakturisati,
                 NeFakturisati = filter.NeFakturisati,
                 PredlPokrImovina = filter.PredlPokrImovina,
                 PredlNepokImovina = filter.PredlNepokImovina,
-                Hipoteka = filter.Hipoteka,
+                Hipoteka = filter.HipotekaKodKatastra,
                 Nekretnina = filter.Nekretnina,
                 Vozila = filter.Vozila,
                 Zaposlen = filter.Zaposlen,

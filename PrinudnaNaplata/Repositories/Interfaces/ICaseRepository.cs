@@ -5,6 +5,6 @@ namespace PrinudnaNaplata.Repositories.Interfaces
 {
     public interface ICaseRepository
     {
-        Task<List<Partija>> GetAllAsync(CaseFilterDto filter);
+        Task<List<CaseListItemDto>> GetAllAsync(CaseFilterDto filter);
     }
 }
