@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dužnici</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-body">
+
+    <nav class="navbar navbar-dark navbar-custom">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand fw-500">Prinudna Naplata</span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small" id="navUsername"></span>
+                <button class="btn btn-sm btn-outline-secondary" id="btnLogout">
+                    <i class="bi bi-box-arrow-right"></i> Odjava
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="tab-bar">
+        <a href="partije.html" class="tab-link">Partije</a>
+        <a href="duznici.html" class="tab-link active">Dužnici</a>
+        <a href="#" class="tab-link">Šifrarnici</a>
+    </div>
+
+    <div class="app-layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-inner">
+
+                <div class="filter-group">
+                    <label>Zaveden kod pov.</label>
+                    <input type="text" class="form-control dark-input" id="f_zavedenkodpov" />
+                </div>
+                <div class="filter-group">
+                    <label>Ime</label>
+                    <input type="text" class="form-control dark-input" id="f_ime" />
+                </div>
+                <div class="filter-group">
+                    <label>Mjesto</label>
+                    <input type="text" class="form-control dark-input" id="f_mjesto" />
+                </div>
+                <div class="filter-group">
+                    <label>Reon</label>
+                    <input type="text" class="form-control dark-input" id="f_reon" />
+                </div>
+                <div class="filter-group">
+                    <label>Adresa</label>
+                    <input type="text" class="form-control dark-input" id="f_adresa" />
+                </div>
+                <div class="filter-group">
+                    <label>JMBG</label>
+                    <input type="text" class="form-control dark-input" id="f_jmbg" />
+                </div>
+                <div class="filter-group">
+                    <label>Lični broj</label>
+                    <input type="text" class="form-control dark-input" id="f_licnibroj" />
+                </div>
+                <div class="filter-group">
+                    <label>Zaposlen kod</label>
+                    <input type="text" class="form-control dark-input" id="f_zaposlen" />
+                </div>
+
+                <div class="sidebar-divider"></div>
+
+                <div class="filter-group">
+                    <label>Nepoznat</label>
+                    <select class="form-select dark-input" id="f_nepoznat">
+                        <option value="">Prikaži sve</option>
+                        <option value="true">Da</option>
+                        <option value="false">Ne</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Umro</label>
+                    <select class="form-select dark-input" id="f_umro">
+                        <option value="">Prikaži sve</option>
+                        <option value="true">Da</option>
+                        <option value="false">Ne</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Penzioner</label>
+                    <select class="form-select dark-input" id="f_penzioner">
+                        <option value="">Prikaži sve</option>
+                        <option value="true">Da</option>
+                        <option value="false">Ne</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Prav./Fiz. lica</label>
+                    <select class="form-select dark-input" id="f_pravnolice">
+                        <option value="">Prikaži sve</option>
+                        <option value="true">Pravno lice</option>
+                        <option value="false">Fizičko lice</option>
+                    </select>
+                </div>
+
+                <div class="sidebar-divider"></div>
+
+                <div class="filter-group">
+                    <label>Ukupan dug &gt;</label>
+                    <input type="number" class="form-control dark-input" id="f_ukupandug" />
+                </div>
+                <div class="filter-group">
+                    <label>Od</label>
+                    <input type="date" class="form-control dark-input" id="f_dugod" />
+                </div>
+                <div class="filter-group">
+                    <label>Do</label>
+                    <input type="date" class="form-control dark-input" id="f_dugdo" />
+                </div>
+
+                <div class="sidebar-actions">
+                    <button class="btn btn-primary w-100" id="btnPrikazi">
+                        <i class="bi bi-search"></i> Prikaži
+                    </button>
+                    <button class="btn btn-outline-secondary w-100 mt-2" id="btnReset">
+                        <i class="bi bi-x-circle"></i> Resetuj
+                    </button>
+                </div>
+
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="results-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted small" id="resultCount"></span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table dark-table">
+                        <thead>
+                            <tr>
+                                <th>Zav. kod pov.</th>
+                                <th>Ime</th>
+                                <th>Mjesto</th>
+                                <th>Ukupan dug</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Unesite kriterije i kliknite Prikaži</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pagination" class="d-flex gap-1 flex-wrap mt-2"></div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="js/duznici.js"></script>
+</body>
+</html>

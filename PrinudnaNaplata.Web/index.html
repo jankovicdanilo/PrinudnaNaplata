@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prinudna Naplata - Prijava</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-body">
+
+    <div class="login-wrap">
+        <div class="login-card">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="bi bi-bank"></i>
+                </div>
+                <h1>Prinudna Naplata</h1>
+                <p>Prijavite se na vaš nalog</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Korisničko ime</label>
+                <div class="input-wrap">
+                    <input type="text" class="form-control dark-input" id="username" placeholder="Unesite korisničko ime" />
+                    <i class="bi bi-person input-icon"></i>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Lozinka</label>
+                <div class="input-wrap">
+                    <input type="password" class="form-control dark-input" id="password" placeholder="Unesite lozinku" />
+                    <i class="bi bi-eye input-icon" id="togglePwd" style="cursor:pointer;"></i>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label text-muted small" for="rememberMe">Zapamti me</label>
+                </div>
+                <a href="#" class="small text-primary text-decoration-none">Zaboravili ste lozinku?</a>
+            </div>
+
+            <button class="btn btn-primary w-100" id="btnLogin">Prijavi se</button>
+
+            <div class="text-center mt-3">
+                <span class="small text-muted">Nemate nalog? </span>
+                <a href="register.html" class="small text-primary text-decoration-none">Registrujte se</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

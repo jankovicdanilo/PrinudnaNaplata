@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partije</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-body">
+
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand fw-500">Prinudna Naplata</span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted small" id="navUsername"></span>
+                <button class="btn btn-sm btn-outline-secondary" id="btnLogout">
+                    <i class="bi bi-box-arrow-right"></i> Odjava
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="tab-bar">
+        <a href="partije.html" class="tab-link active">Partije</a>
+        <a href="duznici.html" class="tab-link">Dužnici</a>
+        <a href="#" class="tab-link">Šifrarnici</a>
+    </div>
+
+    <div class="page-content">
+
+        <!-- Quick search bar -->
+        <div class="filter-card mb-3">
+            <div class="d-flex gap-2 align-items-end flex-wrap">
+                <div style="flex:1; min-width: 200px;">
+                    <label class="filter-label">Brza pretraga</label>
+                    <input type="text" class="form-control dark-input" id="f_sve" placeholder="Pretraži po svim poljima..." />
+                </div>
+                <div style="min-width: 160px;">
+                    <label class="filter-label">Broj partije</label>
+                    <input type="text" class="form-control dark-input" id="f_brojpartije" />
+                </div>
+                <div style="min-width: 160px;">
+                    <label class="filter-label">Ime dužnika</label>
+                    <input type="text" class="form-control dark-input" id="f_ime" />
+                </div>
+                <div style="min-width: 160px;">
+                    <label class="filter-label">I/lv/p/ipv/mal br.</label>
+                    <input type="text" class="form-control dark-input" id="f_resenjebroj" />
+                </div>
+                <button class="btn btn-outline-primary" id="btnAdvanced" type="button">
+                    <i class="bi bi-sliders"></i> Napredna
+                </button>
+                <button class="btn btn-primary" id="btnPrikazi">
+                    <i class="bi bi-search"></i> Prikaži
+                </button>
+                <button class="btn btn-outline-secondary" id="btnReset">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+
+            <!-- Advanced filters panel -->
+            <div id="advancedPanel" style="display:none;">
+                <div class="sidebar-divider mt-3"></div>
+
+                <div class="row g-2 mt-1">
+
+                    <!-- Column 1 -->
+                    <div class="col-md-3">
+                        <div class="adv-section-title">Nadležni organ / Stranka</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Nadl. organ</label>
+                            <select class="form-select dark-input" id="f_sudid">
+                                <option value="">Prikaži sve</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prav./Fiz. lica</label>
+                            <select class="form-select dark-input" id="f_pravnolice">
+                                <option value="">Prikaži sve</option>
+                                <option value="1">Pravno lice</option>
+                                <option value="0">Fizičko lice</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Javna objava</label>
+                            <select class="form-select dark-input" id="f_javnaobjava">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Zaveden kod pov.</label>
+                            <input type="text" class="form-control dark-input" id="f_zavedenkodpov" />
+                        </div>
+                        <div class="adv-section-title mt-2">Iznosi</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Ukupan dug &gt;</label>
+                            <input type="number" class="form-control dark-input" id="f_ukupandug" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Dug prema pov. &gt;</label>
+                            <input type="number" class="form-control dark-input" id="f_dugpov" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Dug prema adv. &gt;</label>
+                            <input type="number" class="form-control dark-input" id="f_dugadv" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Fakturisano povj. %</label>
+                            <input type="number" class="form-control dark-input" id="f_fakturisanoprocenat" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Uplatio iznos &gt;</label>
+                            <input type="number" class="form-control dark-input" id="f_platioiznos" />
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="col-md-3">
+                        <div class="adv-section-title">Datumi</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Predato od</label>
+                            <input type="date" class="form-control dark-input" id="f_predatood" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Predato do</label>
+                            <input type="date" class="form-control dark-input" id="f_predatodo" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Donijeto od</label>
+                            <input type="date" class="form-control dark-input" id="f_donijetood" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Donijeto do</label>
+                            <input type="date" class="form-control dark-input" id="f_donijetodo" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Izvršno od</label>
+                            <input type="date" class="form-control dark-input" id="f_izvrsnodanaod" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Izvršno do</label>
+                            <input type="date" class="form-control dark-input" id="f_izvrsnodanado" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Odlaganje do</label>
+                            <input type="date" class="form-control dark-input" id="f_odlaganjedo" />
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="col-md-3">
+                        <div class="adv-section-title">Status</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Odlaganje</label>
+                            <select class="form-select dark-input" id="f_odlaganje">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Odbačen</label>
+                            <select class="form-select dark-input" id="f_odbacen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prekinut</label>
+                            <select class="form-select dark-input" id="f_prekinut">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Odbijen</label>
+                            <select class="form-select dark-input" id="f_odbijen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Obustavljen</label>
+                            <select class="form-select dark-input" id="f_obustavljen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Mrtav</label>
+                            <select class="form-select dark-input" id="f_mrtav">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Poravnanje</label>
+                            <select class="form-select dark-input" id="f_poravnanje">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Zaključena</label>
+                            <select class="form-select dark-input" id="f_zakljucena">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prigovor</label>
+                            <select class="form-select dark-input" id="f_prigovor">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prigovor usvojen</label>
+                            <select class="form-select dark-input" id="f_prigovorusvojen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prigovor odbijen</label>
+                            <select class="form-select dark-input" id="f_prigovorodbijen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prigovor odbačen</label>
+                            <select class="form-select dark-input" id="f_prigovorodbacen">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="col-md-3">
+                        <div class="adv-section-title">Izvršenje / Fakturisanje</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Izvršno rješenje suda</label>
+                            <select class="form-select dark-input" id="f_izvrsnoResenjeSuda">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prvostepena presuda</label>
+                            <select class="form-select dark-input" id="f_prvostepenaPresuda">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Žalba</label>
+                            <select class="form-select dark-input" id="f_zalba">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Drugostepena presuda</label>
+                            <select class="form-select dark-input" id="f_drugostepenaPresuda">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Izvršenje po presudi</label>
+                            <select class="form-select dark-input" id="f_izvrsenjePoPresudi">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Zaključak/Nalog</label>
+                            <select class="form-select dark-input" id="f_zakljucaknalog">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Nisu postupili</label>
+                            <select class="form-select dark-input" id="f_zakljucaknalognisupostupili">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Fakturisano</label>
+                            <select class="form-select dark-input" id="f_fakturisano">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Fakturisati</label>
+                            <select class="form-select dark-input" id="f_fakturisati">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Ne fakturisati</label>
+                            <select class="form-select dark-input" id="f_nefakturisati">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="adv-section-title mt-2">Imovina</div>
+                        <div class="filter-group">
+                            <label class="filter-label">Pokretna imovina</label>
+                            <select class="form-select dark-input" id="f_predlpokrimovina">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Nepokretna imovina</label>
+                            <select class="form-select dark-input" id="f_predlnepokimovina">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Hipoteka</label>
+                            <select class="form-select dark-input" id="f_hipoteka">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Nekretnina</label>
+                            <select class="form-select dark-input" id="f_nekretnina">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Vozila</label>
+                            <select class="form-select dark-input" id="f_vozila">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Zaposlen</label>
+                            <input type="text" class="form-control dark-input" id="f_zaposlen" />
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Penzioner</label>
+                            <select class="form-select dark-input" id="f_penzioner">
+                                <option value="">Prikaži sve</option>
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Results table -->
+        <div class="results-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted small" id="resultCount"></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table dark-table">
+                    <thead>
+                        <tr>
+                            <th>Br. partije</th>
+                            <th>Dužnik</th>
+                            <th>I br.</th>
+                            <th>IV br.</th>
+                            <th>Predato dana</th>
+                            <th>Donijeto dana</th>
+                            <th>Sudske takse</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">Unesite kriterije i kliknite Prikaži</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="pagination" class="d-flex gap-1 flex-wrap mt-2"></div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="js/partije.js"></script>
+</body>
+</html>
