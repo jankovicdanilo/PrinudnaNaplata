@@ -82,6 +82,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 (@dugDo IS NULL OR dug.DugDo <= @dugDo)
                         )
                         SELECT
+                            COUNT (*) OVER() AS TotalCount,
                             DuznikID,
                             ZavedenKodPov,
                             ZaposlenKod,

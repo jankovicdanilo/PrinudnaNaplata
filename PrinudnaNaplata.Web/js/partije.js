@@ -1,22 +1,11 @@
-const API_URL = 'https://localhost:7206/api';
+
 let currentPage = 1;
-const pageSize = 10;
-
-function getToken() {
-    return localStorage.getItem('token');
-}
-
-function getBool(id) {
-    const val = document.getElementById(id).value;
-    if (val === '') return null;
-    return val === 'true';
-}
 
 function getFilters() {
     return {
-        Sve: document.getElementById('f_sve').value || null,
+        BrzaPretraga: document.getElementById('f_sve').value || null,
         BrojPartije: document.getElementById('f_brojpartije').value || null,
-        Ime: document.getElementById('f_ime').value || null,
+        ImeDuznika: document.getElementById('f_ime').value || null,
         ResenjeBroj: document.getElementById('f_resenjebroj').value || null,
         ZavedenKodPov: document.getElementById('f_zavedenkodpov').value || null,
         Zaposlen: document.getElementById('f_zaposlen').value || null,
@@ -78,27 +67,73 @@ async function loadPartije() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/case?${params.toString()}`, {
-            headers: {
-                'Authorization': `Bearer ${getToken()}`
-            }
-        });
-
-        if (response.status === 401) {
-            window.location.href = 'index.html';
-            return;
+        const result = await apiFetch(`${API_URL}/case?${params.toString()}`);
+        if(result) {
+            renderTable(result.items);
+            renderPagination(result.totalCount);
         }
-
-        const data = await response.json();
-        renderTable(data.data);
     } catch (error) {
         console.error('Greška:', error);
     }
 }
 
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('sr-RS');
+async function loadSudovi() {
+    const response = await fetch(`${API_URL}/court`,{
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    });
+    const data = await response.json();
+    const select = document.getElementById('f_sudid');
+    data.data.forEach(sud => {
+        const option = document.createElement('option');
+        option.value = sud.naziv;
+        option.textContent = sud.naziv;
+        select.appendChild(option);
+    })
+}
+
+function renderPagination(totalCount){
+    const totalPages = Math.ceil(totalCount/ pageSize);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    if(totalPages <= 1)
+        return;
+
+    //Previous button
+    const prev = document.createElement('button');
+    prev.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+    prev.textContent = '←';
+    prev.disabled = currentPage === 1;
+    prev.addEventListener('click', () => {currentPage--; loadPartije();});
+    pagination.appendChild(prev);
+
+    //Page numbers
+    for(let i = 1; i < totalPages; i++){
+        // Show first, last, and pages around current
+        if(i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)){
+            const btn = document.createElement('button');
+            btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            btn.textContent = i;
+            btn.addEventListener('click', () => {currentPage = i; loadPartije(); });
+            pagination.appendChild(btn);
+        } else if(i === currentPage - 3 || i === currentPage + 3){
+            const dots = document.createElement('span');
+            dots.textContent = '...';
+            dots.style.cssText = 'padding: 4px 6px; color: #64748b; font-size: 13px;';
+            pagination.appendChild(dots);
+        }
+    }
+
+    //Next button
+    const next = document.createElement('button');
+    next.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+    next.textContent = '→';
+    next.disabled = currentPage === totalPages;
+    next.addEventListener('click', () => {currentPage++, loadPartije(); })
+    pagination.appendChild(next);
+
+    //Result count
+    document.getElementById('resultCount').textContent = `${totalCount} rezultata — stranica ${currentPage} od ${totalPages}`;
 }
 
 function renderTable(partije) {
@@ -155,3 +190,4 @@ document.getElementById('btnLogout').addEventListener('click', () => {
 
 document.getElementById('navUsername').textContent = localStorage.getItem('username') ?? '';
 loadPartije();
+loadSudovi();

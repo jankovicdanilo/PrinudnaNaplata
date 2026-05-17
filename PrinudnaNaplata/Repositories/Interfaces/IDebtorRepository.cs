@@ -5,6 +5,6 @@ namespace PrinudnaNaplata.Repositories.Interfaces
 {
     public interface IDebtorRepository
     {
-        Task<List<Duznik>> GetAllAsync(DebtorFilterDto filter);
+        Task<PagedResult<List<Duznik>> GetAllAsync(DebtorFilterDto filter);
     }
 }

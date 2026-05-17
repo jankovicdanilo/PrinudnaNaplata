@@ -19,5 +19,6 @@
         public decimal? UkupanDug { get; set; } = null;
         public DateTime? DugOd { get; set; } = null;
         public DateTime? DugDo { get; set; } = null;
+        public int KlijentID { get; set; } = 0;
     }
 }

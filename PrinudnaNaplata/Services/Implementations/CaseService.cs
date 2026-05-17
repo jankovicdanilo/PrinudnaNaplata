@@ -14,32 +14,11 @@ namespace PrinudnaNaplata.Services.Implementations
             this.caseRepository = caseRepository;
         }
 
-        public async Task<Result<List<CaseResponseDto>>> GetAllAsync(CaseFilterDto filter)
+        public async Task<Result<PagedResult<CaseListItemDto>>> GetAllAsync(CaseFilterDto filter)
         {
-            var casesDomain = await caseRepository.GetAllAsync(filter);
+            var pagedResult = await caseRepository.GetAllAsync(filter);
 
-            List<CaseResponseDto> result = new List<CaseResponseDto>();
-
-            foreach(var c in casesDomain)
-            {
-                result.Add
-                    (
-                        new CaseResponseDto
-                        (
-                            c.PartijaID,
-                            c.BrojPartije,
-                            c.DuznikID,
-                            c.DuznikIme,
-                            c.ResenjeBroj,
-                            c.IVb,
-                            c.PredatoDana,
-                            c.DonetoDana,
-                            c.SudskeTakse
-                        )
-                    );
-            }
-
-            return Result<List<CaseResponseDto>>.Ok(result);
+            return Result<PagedResult<CaseListItemDto>>.Ok(pagedResult);
         }
     }
 }

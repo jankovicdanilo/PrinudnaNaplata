@@ -21,6 +21,8 @@ builder.Services.AddScoped<IDebtorRepository, DebtorRepository>();
 builder.Services.AddScoped<IDebtorService, DebtorService>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
+builder.Services.AddScoped<ICourtService, CourtService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<DebtorFilterValidator>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -96,8 +98,8 @@ builder.Services.AddCors(options =>
         (
             "http://127.0.0.1:5500",
             "http://localhost:5500",
-            "https://127.0.0.1:5500",
-            "https://localhost:5500"
+            "http://127.0.0.1:5501",
+            "http://localhost:5501"
         )
         .AllowAnyHeader()
         .AllowAnyMethod();

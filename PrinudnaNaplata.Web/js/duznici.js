@@ -1,10 +1,5 @@
-const API_URL = 'https://localhost:7206/api';
-let currentPage = 1;
-const pageSize = 10;
 
-function getToken() {
-    return localStorage.getItem('token');
-}
+let currentPage = 1;
 
 function getFilters() {
     return {
@@ -38,19 +33,8 @@ async function loadDuznici() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/debtor?${params.toString()}`, {
-            headers: {
-                'Authorization': `Bearer ${getToken()}`
-            }
-        });
-
-        if (response.status === 401) {
-            window.location.href = 'index.html';
-            return;
-        }
-
-        const data = await response.json();
-        renderTable(data.data);
+        const data = await apiFetch(`${API_URL}/debtor?${params.toString()}`);
+        if(data) renderTable(data);
     } catch (error) {
         console.error('Greška:', error);
     }
