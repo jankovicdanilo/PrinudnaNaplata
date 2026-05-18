@@ -1,6 +1,6 @@
 /* ─── LOGIN ─────────────────────────────────────────── */
 body.login-body {
-    background: #e8f0fe;
+    background: #81c0b3;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -111,43 +111,43 @@ body.login-body {
 
 /* ─── LAYOUT ─────────────────────────────────────────── */
 body.dark-body {
-    background: #e8f0fe;
+    background: #81c0b3;
     color: #1e293b;
     min-height: 100vh;
 }
 
 .navbar-custom {
-    background: #ffffff;
-    border-bottom: 0.5px solid #cbd5e1;
+    background: #81c0b3;
+    border-bottom: 0.5px solid #6aab9e;
     padding: 0.75rem 0;
 }
 
 .navbar-brand {
-    color: #1e293b !important;
+    color: #ffffff !important;
 }
 
 .tab-bar {
-    background: #ffffff;
-    border-bottom: 0.5px solid #cbd5e1;
+    background: #81c0b3;
+    border-bottom: 0.5px solid #6aab9e;
     display: flex;
     gap: 0;
     padding: 0 1.5rem;
 }
 
 .tab-link {
-    color: #64748b;
+     color: #ffffff;
     text-decoration: none;
     padding: 0.75rem 1.25rem;
     font-size: 14px;
     border-bottom: 2px solid transparent;
-    transition: all 0.15s;
+    transition: all 0.15s
 }
 
 .tab-link:hover { color: #1e293b; }
 
 .tab-link.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
+    color: #1e293b;
+    border-bottom-color: #1e293b;
 }
 
 .page-content {
@@ -201,6 +201,7 @@ body.dark-body {
     overflow-y: auto;
     padding: 1.25rem;
     height: 100%;
+    min-width: 0;
 }
 
 /* ─── CARDS ──────────────────────────────────────────── */
@@ -209,6 +210,7 @@ body.dark-body {
     border: 0.5px solid #cbd5e1;
     border-radius: 12px;
     padding: 1.25rem;
+    height: fit-content;
 }
 
 .results-card {
@@ -304,4 +306,16 @@ body.dark-body {
 
 .filter-group {
     margin-bottom: 0.6rem;
+}
+
+#pagination {
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.page-ellipsis {
+    padding: 0 6px;
+    color: #aaa;
+    line-height: 1;
+    align-self: flex-end;
 }

@@ -11,5 +11,6 @@
         public DateTime? PredatoDana { get; init; }
         public DateTime? DonetoDana { get; init; }
         public decimal? SudskeTakse { get; init; }
+        public int TotalCount { get; init; }
     }
 }

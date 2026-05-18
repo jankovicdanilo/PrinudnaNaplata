@@ -5,6 +5,6 @@ namespace PrinudnaNaplata.Services.Interfaces
 {
     public interface ICaseService
     {
-        Task<Result<List<CaseResponseDto>>> GetAllAsync(CaseFilterDto filter);
+        Task<Result<PagedResult<CaseListItemDto>>> GetAllAsync(CaseFilterDto filter);
     }
 }

@@ -1,10 +1,5 @@
-const API_URL = 'https://localhost:7206/api';
-let currentPage = 1;
-const pageSize = 10;
 
-function getToken() {
-    return localStorage.getItem('token');
-}
+let currentPage = 1;
 
 function getFilters() {
     return {
@@ -38,19 +33,12 @@ async function loadDuznici() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/debtor?${params.toString()}`, {
-            headers: {
-                'Authorization': `Bearer ${getToken()}`
-            }
-        });
-
-        if (response.status === 401) {
-            window.location.href = 'index.html';
-            return;
-        }
-
-        const data = await response.json();
-        renderTable(data.data);
+        const data = await apiFetch(`${API_URL}/debtor?${params.toString()}`);
+        if (data) {
+    renderTable(data.items);  // ✅
+    document.getElementById('resultCount').textContent = `${data.totalCount} rezultata`;
+    renderPagination(data.totalCount);
+}
     } catch (error) {
         console.error('Greška:', error);
     }
@@ -77,21 +65,53 @@ function renderTable(duznici) {
     `).join('');
 }
 
-function renderPagination(total) {
-    const totalPages = Math.ceil(total / pageSize);
+function renderPagination(totalCount) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
-    for (let i = 1; i <= totalPages; i++) {
+    const totalPages = Math.ceil(totalCount / pageSize);
+    if (totalPages <= 1) return;
+
+    const createBtn = (label, page, disabled = false, active = false) => {
         const btn = document.createElement('button');
-        btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-        btn.textContent = i;
+        btn.className = `page-btn ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+        btn.textContent = label;
+        btn.disabled = disabled;
         btn.addEventListener('click', () => {
-            currentPage = i;
+            currentPage = page;
             loadDuznici();
         });
-        pagination.appendChild(btn);
+        return btn;
+    };
+
+    const addEllipsis = () => {
+        const span = document.createElement('span');
+        span.textContent = '...';
+        span.className = 'page-ellipsis';
+        pagination.appendChild(span);
+    };
+
+    pagination.appendChild(createBtn('«', 1, currentPage === 1));
+    pagination.appendChild(createBtn('‹', currentPage - 1, currentPage === 1));
+
+    const delta = 2;
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
+
+    pagination.appendChild(createBtn(1, 1, false, currentPage === 1));
+
+    if (left > 2) addEllipsis();
+
+    for (let i = left; i <= right; i++) {
+        pagination.appendChild(createBtn(i, i, false, i === currentPage));
     }
+
+    if (right < totalPages - 1) addEllipsis();
+
+    pagination.appendChild(createBtn(totalPages, totalPages, false, currentPage === totalPages));
+
+    pagination.appendChild(createBtn('›', currentPage + 1, currentPage === totalPages));
+    pagination.appendChild(createBtn('»', totalPages, currentPage === totalPages));
 }
 
 document.getElementById('btnPrikazi').addEventListener('click', () => {
@@ -110,11 +130,5 @@ document.getElementById('btnReset').addEventListener('click', () => {
     document.getElementById('pagination').innerHTML = '';
 });
 
-document.getElementById('btnLogout').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    window.location.href = 'index.html';
-});
-
-document.getElementById('navUsername').textContent = localStorage.getItem('username') ?? '';
+initNavbar(() => { currentPage = 1; loadDuznici(); });
 loadDuznici();

@@ -6,7 +6,7 @@
         string? BrojPartije,
         string? ResenjeBroj, // searches IVb, Pb, MalBroj, IpvBroj, RBroj too
         string? ImeDuznika,
-        string? NadlezniOrgan,
+        int? SudID,
         DateTime? PredatoDanaOd,
         DateTime? PredatoDanaDo,
         DateTime? DonetoDanaOd,
@@ -55,6 +55,7 @@
         string? Zaposlen,
         bool? Penzioner,
         int PageNumber = 1,
-        int PageSize = 10  
+        int PageSize = 10  ,
+        int KlijentID = 0
     );
 }

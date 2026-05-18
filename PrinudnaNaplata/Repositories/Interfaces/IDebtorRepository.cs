@@ -1,10 +1,11 @@
 ﻿using PrinudnaNaplata.Domain;
 using PrinudnaNaplata.Models.Dtos.Debtor;
+using PrinudnaNaplata.Results;
 
 namespace PrinudnaNaplata.Repositories.Interfaces
 {
     public interface IDebtorRepository
     {
-        Task<List<Duznik>> GetAllAsync(DebtorFilterDto filter);
+        Task<PagedResult<DebtorListItemDto>> GetAllAsync(DebtorFilterDto filter);
     }
 }

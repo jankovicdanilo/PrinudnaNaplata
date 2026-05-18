@@ -1,10 +1,12 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using PrinudnaNaplata.Models.Dto.Auth;
 using PrinudnaNaplata.Models.Dtos.Auth;
 using PrinudnaNaplata.Models.Dtos.OldAspNet;
+using PrinudnaNaplata.Results;
 using PrinudnaNaplata.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,11 +20,15 @@ namespace PrinudnaNaplata.Services.Implementations
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly IMapper mapper;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration, IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.mapper = mapper;
+            this.roleManager = roleManager;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -91,6 +97,58 @@ namespace PrinudnaNaplata.Services.Implementations
             }
 
             return await BuildResponseAsync(newUser);
+        }
+
+        public async Task<Result<ChangePasswordResponseDto>> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return Result<ChangePasswordResponseDto>.Fail("USER_NOT_FOUND", $"User with id {userId} not found");
+            }
+
+            var result = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+            if (!result.Succeeded)
+            {
+                var errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
+                return Result<ChangePasswordResponseDto>.Fail($"CHANGE_PASSWORD_FAILED", errorMessage);
+            }
+
+            await userManager.UpdateSecurityStampAsync(user);
+
+            var response = mapper.Map<ChangePasswordResponseDto>(user);
+            response.Roles = (await userManager.GetRolesAsync(user)).ToList();
+
+            return Result<ChangePasswordResponseDto>.Ok(response);
+        }
+
+        public async Task<Result<ResetPasswordResponseDto>> ResetPasswordAsync(string userId, string newPassword)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if(user == null)
+            {
+                return Result<ResetPasswordResponseDto>.Fail("USER_NOT_FOUND", $"User with id {userId} not found");
+            }
+
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await userManager.ResetPasswordAsync(user, resetToken, newPassword);
+
+            if (!result.Succeeded)
+            {
+                var errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
+                return Result<ResetPasswordResponseDto>.Fail("RESET_PASSWORD_FAILED", errorMessage);
+            }
+
+            await userManager.UpdateSecurityStampAsync(user);
+
+            var response = mapper.Map<ResetPasswordResponseDto>(user);
+            response.Roles = (await userManager.GetRolesAsync(user)).ToList();
+
+            return Result<ResetPasswordResponseDto>.Ok(response);
         }
 
         // ── Private helpers ───────────────────────────────────────────────────────

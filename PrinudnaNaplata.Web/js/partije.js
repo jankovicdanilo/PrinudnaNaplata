@@ -1,22 +1,11 @@
-const API_URL = 'https://localhost:7206/api';
+
 let currentPage = 1;
-const pageSize = 10;
-
-function getToken() {
-    return localStorage.getItem('token');
-}
-
-function getBool(id) {
-    const val = document.getElementById(id).value;
-    if (val === '') return null;
-    return val === 'true';
-}
 
 function getFilters() {
     return {
-        Sve: document.getElementById('f_sve').value || null,
+        BrzaPretraga: document.getElementById('f_sve').value || null,
         BrojPartije: document.getElementById('f_brojpartije').value || null,
-        Ime: document.getElementById('f_ime').value || null,
+        ImeDuznika: document.getElementById('f_ime').value || null,
         ResenjeBroj: document.getElementById('f_resenjebroj').value || null,
         ZavedenKodPov: document.getElementById('f_zavedenkodpov').value || null,
         Zaposlen: document.getElementById('f_zaposlen').value || null,
@@ -78,27 +67,77 @@ async function loadPartije() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/case?${params.toString()}`, {
-            headers: {
-                'Authorization': `Bearer ${getToken()}`
-            }
-        });
-
-        if (response.status === 401) {
-            window.location.href = 'index.html';
-            return;
+        const result = await apiFetch(`${API_URL}/case?${params.toString()}`);
+        if(result) {
+            renderTable(result.items);
+            renderPagination(result.totalCount);
         }
-
-        const data = await response.json();
-        renderTable(data.data);
     } catch (error) {
         console.error('Greška:', error);
     }
 }
 
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('sr-RS');
+async function loadSudovi() {
+    const response = await fetch(`${API_URL}/court`,{
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    });
+    const data = await response.json();
+    const select = document.getElementById('f_sudid');
+    data.data.forEach(sud => {
+        const option = document.createElement('option');
+        option.value = sud.naziv;
+        option.textContent = sud.naziv;
+        select.appendChild(option);
+    })
+}
+
+function renderPagination(totalCount) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+    if (totalPages <= 1) return;
+
+    const createBtn = (label, page, disabled = false, active = false) => {
+        const btn = document.createElement('button');
+        btn.className = `page-btn ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+        btn.textContent = label;
+        btn.disabled = disabled;
+        btn.addEventListener('click', () => {
+            currentPage = page;
+            loadPartije();
+        });
+        return btn;
+    };
+
+    const addEllipsis = () => {
+        const span = document.createElement('span');
+        span.textContent = '...';
+        span.className = 'page-ellipsis';
+        pagination.appendChild(span);
+    };
+
+    pagination.appendChild(createBtn('«', 1, currentPage === 1));
+    pagination.appendChild(createBtn('‹', currentPage - 1, currentPage === 1));
+
+    const delta = 2;
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
+
+    pagination.appendChild(createBtn(1, 1, false, currentPage === 1));
+
+    if (left > 2) addEllipsis();
+
+    for (let i = left; i <= right; i++) {
+        pagination.appendChild(createBtn(i, i, false, i === currentPage));
+    }
+
+    if (right < totalPages - 1) addEllipsis();
+
+    pagination.appendChild(createBtn(totalPages, totalPages, false, currentPage === totalPages));
+
+    pagination.appendChild(createBtn('›', currentPage + 1, currentPage === totalPages));
+    pagination.appendChild(createBtn('»', totalPages, currentPage === totalPages));
 }
 
 function renderTable(partije) {
@@ -147,11 +186,8 @@ document.getElementById('btnReset').addEventListener('click', () => {
     document.getElementById('pagination').innerHTML = '';
 });
 
-document.getElementById('btnLogout').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    window.location.href = 'index.html';
-});
+// remove btnLogout and navUsername lines
+initNavbar(() => { currentPage = 1; loadPartije(); });
 
-document.getElementById('navUsername').textContent = localStorage.getItem('username') ?? '';
 loadPartije();
+loadSudovi();

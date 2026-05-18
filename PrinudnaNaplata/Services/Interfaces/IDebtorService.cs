@@ -5,6 +5,6 @@ namespace PrinudnaNaplata.Services.Interfaces
 {
     public interface IDebtorService
     {
-        Task<Result<List<DebtorResponseDto>>> GetAllAsync(DebtorFilterDto filter);
+        Task<Result<PagedResult<DebtorListItemDto>>> GetAllAsync(DebtorFilterDto filter);
     }
 }

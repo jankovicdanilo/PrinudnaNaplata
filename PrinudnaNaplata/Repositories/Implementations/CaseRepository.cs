@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using PrinudnaNaplata.Domain;
 using PrinudnaNaplata.Models.Dtos.Case;
 using PrinudnaNaplata.Repositories.Interfaces;
+using PrinudnaNaplata.Results;
 using System.Diagnostics;
 
 namespace PrinudnaNaplata.Repositories.Implementations
@@ -16,7 +17,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<List<CaseListItemDto>> GetAllAsync(CaseFilterDto filter)
+        public async Task<PagedResult<CaseListItemDto>> GetAllAsync(CaseFilterDto filter)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -36,6 +37,9 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     partije.PartijaID,
                                     partije.BrojPartije,
                                     partije.DuznikID,
+                                    sud.SudID as SudID,
+                                    sud1.SudID as Sud1ID,
+                                    preduzeca.PreduzeceID,
                                     duznik.Ime as DuznikIme,
                                     partije.ResenjeBroj,
                                     partije.IVb,
@@ -48,6 +52,18 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 LEFT JOIN Dugovanja dugovanja on dugovanja.DuznikID = duznik.DuznikID
                                 LEFT JOIN Preduzeca preduzeca ON preduzeca.PreduzeceID = duznik.PreduzeceID 
                                 WHERE
+                                    (@Sve IS NULL OR @Sve = '' OR
+                                        partije.BrojPartije LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        duznik.Ime LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.ResenjeBroj LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.IVb LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.Pb LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.MalBroj LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.IpvBroj LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        partije.RBroj LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        duznik.ZavedenKodPov LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI OR
+                                        sud.Naziv LIKE '%' + @Sve + '%' COLLATE Latin1_General_CI_AI
+                                    ) AND
                                     (@BrojPartije IS NULL OR @BrojPartije = '' OR partije.BrojPartije LIKE '%' + @BrojPartije + '%' COLLATE Latin1_General_CI_AI) AND
                                     (
                                     @ResenjeBroj IS NULL OR @ResenjeBroj = '' OR
@@ -61,8 +77,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     (@Ime IS NULL OR @Ime = '' OR duznik.Ime LIKE '%' + @Ime + '%' COLLATE Latin1_General_CI_AI) AND
                                     (@Zaposlen IS NULL OR @Zaposlen = '' OR preduzeca.Naziv LIKE '%' + @Zaposlen + 
                                     '%' COLLATE Latin1_General_CI_AI) AND
-                                    (@NadlezniOrgan IS NULL OR @NadlezniOrgan = '' OR sud.Naziv like '%' +
-                                    @NadlezniOrgan + '%' COLLATE Latin1_General_CI_AI) AND
+                                    (@SudID IS NULL OR partije.SudID = @SudID OR partije.Sud1ID = @SudID) AND
                                     (@PredatoDanaOd IS NULL OR partije.PredatoDana >= @PredatoDanaOd) AND
                                     (@PredatoDanaDo IS NULL OR partije.PredatoDana <= @PredatoDanaDo) AND
                                     (@DonetoDanaOd IS NULL OR partije.DonetoDana >= @DonetoDanaOd) AND
@@ -110,6 +125,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     (@UkupanDug IS NULL OR  dugovanja.UkupnoDugovanje >= @UkupanDug)
                                 )
                                 SELECT 
+                                    COUNT(*) OVER() as TotalCount,
                                     PartijaID,
                                     BrojPartije,
                                     DuznikID,
@@ -119,18 +135,19 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     PredatoDana,
                                     DonetoDana,
                                     SudskeTakse
-                                FROM Filtered
-                                Order By PartijaID
-                                OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
+                                    FROM Filtered
+                                    Order By PartijaID
+                                    OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
             var result = await connection.QueryAsync<CaseListItemDto>(sql,new
             {
                 pageSize = filter.PageSize,
                 offset,
+                Sve = filter.BrzaPretraga,
                 BrojPartije = filter.BrojPartije,
                 ResenjeBroj = filter.ResenjeBroj,
                 Ime = filter.ImeDuznika,
-                NadlezniOrgan = filter.NadlezniOrgan,
+                SudID = filter.SudID,
                 PredatoDanaOd = filter.PredatoDanaOd,
                 PredatoDanaDo = filter.PredatoDanaDo,
                 DonetoDanaOd = filter.DonetoDanaOd,
@@ -179,7 +196,10 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 UkupanDug = filter.UkupanDug
             });
 
-            return result.ToList();
+            var items = result.ToList();
+            var totalCount = items.FirstOrDefault()?.TotalCount ?? 0;
+
+            return PagedResult<CaseListItemDto>.Create(items, totalCount, filter.PageNumber, filter.PageSize);
         }
     }
 }
