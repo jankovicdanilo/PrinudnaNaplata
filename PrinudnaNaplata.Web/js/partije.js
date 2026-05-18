@@ -182,12 +182,8 @@ document.getElementById('btnReset').addEventListener('click', () => {
     document.getElementById('pagination').innerHTML = '';
 });
 
-document.getElementById('btnLogout').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    window.location.href = 'index.html';
-});
+// remove btnLogout and navUsername lines
+initNavbar(() => { currentPage = 1; loadPartije(); });
 
-document.getElementById('navUsername').textContent = localStorage.getItem('username') ?? '';
 loadPartije();
 loadSudovi();

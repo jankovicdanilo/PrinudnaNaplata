@@ -5,6 +5,7 @@ using PrinudnaNaplata.Data;
 using PrinudnaNaplata.Domain;
 using PrinudnaNaplata.Models.Dtos.Debtor;
 using PrinudnaNaplata.Repositories.Interfaces;
+using PrinudnaNaplata.Results;
 
 namespace PrinudnaNaplata.Repositories.Implementations
 {
@@ -19,7 +20,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<List<Duznik>> GetAllAsync(DebtorFilterDto filter)
+        public async Task<PagedResult<DebtorListItemDto>> GetAllAsync(DebtorFilterDto filter)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -34,6 +35,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 MIN(DugOd) as DugOd,
                                 MAX(DugDo) as DugDo
                             FROM Partije
+                            WHERE (@klijentID IS NULL OR @klijentID = 0 OR KlijentID = @klijentID)
                             GROUP BY DuznikID
                         ),
                         Filtered AS (
@@ -82,35 +84,17 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 (@dugDo IS NULL OR dug.DugDo <= @dugDo)
                         )
                         SELECT
-                            COUNT (*) OVER() AS TotalCount,
+                            COUNT(*) OVER() AS TotalCount,
                             DuznikID,
                             ZavedenKodPov,
-                            ZaposlenKod,
                             Ime,
                             Mjesto,
-                            Adresa,
-                            JMBG,
-                            RegBr,
-                            LicniBroj,
-                            Nepoznat,
-                            Umro,
-                            Penzioner,
-                            Reon,
-                            Nekretnina,
-                            PravnoLice,
-                            Oznacen,
-                            Vozila,
-                            BrojeviRacuna,
-                            Prebivaliste,
-                            PreduzeceID,
-                            DugOd,
-                            DugDo,
                             UkupnoDugovanje
                         FROM Filtered
                         ORDER BY ZavedenKodPov
                         OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
-            var result = await connection.QueryAsync<Duznik>(sql, new
+            var result = await connection.QueryAsync<DebtorListItemDto>(sql, new
             {
                 ime = filter.Ime,
                 mjesto = filter.Mjesto,
@@ -127,11 +111,15 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 ukupanDug = filter.UkupanDug,
                 dugOd = filter.DugOd,
                 dugDo = filter.DugDo,
+                klijentID = filter.KlijentID,
                 offset,
                 pageSize = filter.PageSize
             });
 
-            return result.ToList();
+            var items = result.ToList();
+            var totalCount = items.FirstOrDefault()?.TotalCount ?? 0;
+
+            return PagedResult<DebtorListItemDto>.Create(items, totalCount, filter.PageNumber, filter.PageSize);
         }
     }
 }

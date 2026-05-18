@@ -14,7 +14,8 @@ function getBool(id){
 
 async function apiFetch(url) {
     const response = await fetch(url, {
-        headers:{'Authorization': `Bearer ${getToken()}`}
+        headers:{'Authorization': `Bearer ${getToken()}`},
+        credentials: 'include'
     });
     if(response.status === 401){
         window.location.href = 'index.html';

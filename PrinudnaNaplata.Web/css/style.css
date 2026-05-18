@@ -312,3 +312,10 @@ body.dark-body {
     justify-content: center;
     margin-top: 1rem;
 }
+
+.page-ellipsis {
+    padding: 0 6px;
+    color: #aaa;
+    line-height: 1;
+    align-self: flex-end;
+}
