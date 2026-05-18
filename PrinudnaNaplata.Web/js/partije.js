@@ -91,49 +91,53 @@ async function loadSudovi() {
     })
 }
 
-function renderPagination(totalCount){
-    const totalPages = Math.ceil(totalCount/ pageSize);
+function renderPagination(totalCount) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
-    if(totalPages <= 1)
-        return;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    if (totalPages <= 1) return;
 
-    //Previous button
-    const prev = document.createElement('button');
-    prev.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
-    prev.textContent = '←';
-    prev.disabled = currentPage === 1;
-    prev.addEventListener('click', () => {currentPage--; loadPartije();});
-    pagination.appendChild(prev);
+    const createBtn = (label, page, disabled = false, active = false) => {
+        const btn = document.createElement('button');
+        btn.className = `page-btn ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+        btn.textContent = label;
+        btn.disabled = disabled;
+        btn.addEventListener('click', () => {
+            currentPage = page;
+            loadPartije();
+        });
+        return btn;
+    };
 
-    //Page numbers
-    for(let i = 1; i < totalPages; i++){
-        // Show first, last, and pages around current
-        if(i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)){
-            const btn = document.createElement('button');
-            btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-            btn.textContent = i;
-            btn.addEventListener('click', () => {currentPage = i; loadPartije(); });
-            pagination.appendChild(btn);
-        } else if(i === currentPage - 3 || i === currentPage + 3){
-            const dots = document.createElement('span');
-            dots.textContent = '...';
-            dots.style.cssText = 'padding: 4px 6px; color: #64748b; font-size: 13px;';
-            pagination.appendChild(dots);
-        }
+    const addEllipsis = () => {
+        const span = document.createElement('span');
+        span.textContent = '...';
+        span.className = 'page-ellipsis';
+        pagination.appendChild(span);
+    };
+
+    pagination.appendChild(createBtn('«', 1, currentPage === 1));
+    pagination.appendChild(createBtn('‹', currentPage - 1, currentPage === 1));
+
+    const delta = 2;
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
+
+    pagination.appendChild(createBtn(1, 1, false, currentPage === 1));
+
+    if (left > 2) addEllipsis();
+
+    for (let i = left; i <= right; i++) {
+        pagination.appendChild(createBtn(i, i, false, i === currentPage));
     }
 
-    //Next button
-    const next = document.createElement('button');
-    next.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
-    next.textContent = '→';
-    next.disabled = currentPage === totalPages;
-    next.addEventListener('click', () => {currentPage++, loadPartije(); })
-    pagination.appendChild(next);
+    if (right < totalPages - 1) addEllipsis();
 
-    //Result count
-    document.getElementById('resultCount').textContent = `${totalCount} rezultata — stranica ${currentPage} od ${totalPages}`;
+    pagination.appendChild(createBtn(totalPages, totalPages, false, currentPage === totalPages));
+
+    pagination.appendChild(createBtn('›', currentPage + 1, currentPage === totalPages));
+    pagination.appendChild(createBtn('»', totalPages, currentPage === totalPages));
 }
 
 function renderTable(partije) {

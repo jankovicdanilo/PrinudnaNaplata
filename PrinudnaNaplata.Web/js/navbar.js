@@ -7,7 +7,16 @@ function renderNavbar() {
                 <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
                     <select id="klijentDropdown" class="form-select form-select-sm dark-input" style="width: auto;">
                     </select>
-                    <span style="color: #fff; font-size: 14px;" id="navUsername"></span>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" id="navUsername" data-bs-toggle="dropdown"
+                        style="color:#fff; font-size:14px; text-decoration:none; padding: 0;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width: 160px; font-size: 10px;">
+                            <li><a class="dropdown-item py-1" href="promjena-lozinke.html">
+                                <i class="bi bi-key"></i> Promjena lozinke
+                            </a></li>
+                        </ul>
+                    </div>
                     <button class="btn btn-sm btn-outline-light" id="btnLogout">
                         <i class="bi bi-box-arrow-right"></i> Odjava
                     </button>
