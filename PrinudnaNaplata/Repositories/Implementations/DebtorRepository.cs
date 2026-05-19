@@ -91,7 +91,7 @@ namespace PrinudnaNaplata.Repositories.Implementations
                             Mjesto,
                             UkupnoDugovanje
                         FROM Filtered
-                        ORDER BY DuznikID
+                        ORDER BY ZavedenKodPov
                         OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
             var result = await connection.QueryAsync<DebtorListItemDto>(sql, new

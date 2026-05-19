@@ -18,8 +18,9 @@ function getFilters() {
         UkupanDug: document.getElementById('f_ukupandug').value || null,
         DugOd: document.getElementById('f_dugod').value || null,
         DugDo: document.getElementById('f_dugdo').value || null,
+        KlijentID: parseInt(localStorage.getItem('selectedKlijent')) || 0,
         PageNumber: currentPage,
-        PageSize: pageSize
+        PageSize: pageSize,
     };
 }
 

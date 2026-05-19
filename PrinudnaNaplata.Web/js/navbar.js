@@ -32,7 +32,7 @@ function renderNavbar() {
     document.getElementById('btnLogout').addEventListener('click', () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
-        document.cookie = 'selectedKlijent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+        localStorage.removeItem('selectedKlijent');
         window.location.href = 'index.html';
     });
 }
@@ -51,18 +51,19 @@ async function initNavbar(onKlijentChange) {
     select.appendChild(defaultOption);
 
     data.forEach(k => {
-      if (k.klijentID === 0 || k.naziv?.toLowerCase() === 'svi klijenti') return;
+        if (k.klijentID === 0 || k.naziv?.toLowerCase() === 'svi klijenti') return;
         const option = document.createElement('option');
         option.value = k.klijentID;
         option.textContent = k.naziv;
         select.appendChild(option);
     });
 
-    const current = document.cookie.split('; ').find(r => r.startsWith('selectedKlijent='))?.split('=')[1];
+    // Switch from cookie to localStorage
+    const current = localStorage.getItem('selectedKlijent');
     if (current) select.value = current;
 
     select.addEventListener('change', () => {
-        document.cookie = `selectedKlijent=${select.value}; path=/`;
+        localStorage.setItem('selectedKlijent', select.value);
         if (onKlijentChange) onKlijentChange();
     });
 }

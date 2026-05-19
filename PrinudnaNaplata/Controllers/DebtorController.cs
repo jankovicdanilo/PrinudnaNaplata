@@ -31,12 +31,6 @@ namespace PrinudnaNaplata.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            if(Request.Cookies.TryGetValue("selectedKlijent", out var klijentCookie)
-                && int.TryParse(klijentCookie, out var klijentId))
-            {
-                filter.KlijentID = klijentId;
-            }
-
             var result = await debtorService.GetAllAsync(filter);
 
             return Ok(result);
