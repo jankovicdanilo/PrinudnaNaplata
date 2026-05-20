@@ -1,4 +1,11 @@
 
+let debounceTimer;
+
+function debounce(fn, delay = 400){
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fn, delay);
+}
+
 let currentPage = 1;
 
 function getFilters() {
@@ -121,14 +128,29 @@ document.getElementById('btnPrikazi').addEventListener('click', () => {
 
 document.getElementById('btnReset').addEventListener('click', () => {
     document.querySelectorAll('.dark-input').forEach(el => {
-        if (el.tagName === 'SELECT') el.value = '';
-        else el.value = '';
+        el.value = '';
     });
     currentPage = 1;
-    document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Unesite kriterije i kliknite Prikaži</td></tr>';
-    document.getElementById('resultCount').textContent = '';
-    document.getElementById('pagination').innerHTML = '';
+    loadDuznici();
 });
 
 initNavbar(() => { currentPage = 1; loadDuznici(); });
 loadDuznici();
+
+document.querySelectorAll('.dark-input').forEach(el => {
+    el.addEventListener('input', () => {
+        debounce(() =>{
+            currentPage = 1;
+            loadDuznici();
+        });
+    });
+});
+
+document.querySelectorAll('.dark-input').forEach(el =>{
+    el.addEventListener('input', () => {
+        debounce(() => {
+            currentPage = 1;
+            loadDuznici();
+        });
+    });
+});
