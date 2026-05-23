@@ -59,8 +59,6 @@ function renderTable(duznici) {
         return;
     }
 
-    document.getElementById('resultCount').textContent = `${duznici.length} rezultata`;
-
     tbody.innerHTML = duznici.map(d => `
         <tr>
             <td>${d.zavedenKodPov ?? ''}</td>
@@ -140,15 +138,6 @@ loadDuznici();
 document.querySelectorAll('.dark-input').forEach(el => {
     el.addEventListener('input', () => {
         debounce(() =>{
-            currentPage = 1;
-            loadDuznici();
-        });
-    });
-});
-
-document.querySelectorAll('.dark-input').forEach(el =>{
-    el.addEventListener('input', () => {
-        debounce(() => {
             currentPage = 1;
             loadDuznici();
         });
