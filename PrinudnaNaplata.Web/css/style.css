@@ -319,3 +319,12 @@ body.dark-body {
     line-height: 1;
     align-self: flex-end;
 }
+
+@media (max-width: 767.98px) {
+    .page-content {
+        padding: 0.75rem;
+    }
+    .filter-card, .results-card {
+        padding: 0.75rem;
+    }
+}

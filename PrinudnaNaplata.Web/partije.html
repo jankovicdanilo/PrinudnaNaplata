@@ -10,8 +10,8 @@
     <style>
         .adv-select { font-size: 12px; padding: 3px 6px; height: 28px; }
         .adv-input  { font-size: 12px; padding: 3px 6px; height: 28px; }
-        .adv-label  { font-size: 11px; margin-bottom: 2px; color: #adb5bd; display: block; }
-        .adv-group  { margin-bottom: 6px; }
+        .adv-label  { font-size: 11px; margin-bottom: 5px; color: #adb5bd; display: block; }
+        .adv-group  { margin-bottom: 12px; }
         .adv-title  { font-size: 11px; font-weight: 600; text-transform: uppercase;
                       letter-spacing: .05em; color: #6c757d; margin: 10px 0 6px; }
     </style>
@@ -62,10 +62,12 @@
             <!-- Advanced filters panel -->
             <div id="advancedPanel" style="display:none;">
                 <div class="sidebar-divider mt-3 mb-3"></div>
+
+                <!-- Pod-red 1: Prioritetni filteri (3 kolone) -->
                 <div class="row g-3">
 
-                    <!-- Column 1: Opšto (4) + Iznosi (5) = 9 -->
-                    <div class="col-md-3">
+                    <!-- Nadl. organ / Stranka -->
+                    <div class="col-12 col-md-4">
                         <div class="adv-title">Nadležni organ / Stranka</div>
                         <div class="adv-group">
                             <label class="adv-label">Nadl. organ</label>
@@ -93,6 +95,10 @@
                             <label class="adv-label">Zaveden kod pov.</label>
                             <input type="text" class="form-control dark-input adv-input" id="f_zavedenkodpov" />
                         </div>
+                    </div>
+
+                    <!-- Iznosi -->
+                    <div class="col-12 col-md-4">
                         <div class="adv-title">Iznosi</div>
                         <div class="adv-group">
                             <label class="adv-label">Ukupan dug &gt;</label>
@@ -116,17 +122,17 @@
                         </div>
                     </div>
 
-                    <!-- Column 2: Datumi (4 pairs) + Prigovor (4) = 8 -->
-                    <div class="col-md-3">
+                    <!-- Datumi -->
+                    <div class="col-12 col-md-4">
                         <div class="adv-title">Datumi</div>
                         <div class="adv-group">
                             <label class="adv-label">Predato</label>
-                            <div class="d-flex gap-1">
-                                <div class="flex-fill">
+                            <div class="row g-1">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Od</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_predatood" />
                                 </div>
-                                <div class="flex-fill">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Do</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_predatodo" />
                                 </div>
@@ -134,12 +140,12 @@
                         </div>
                         <div class="adv-group">
                             <label class="adv-label">Donijeto</label>
-                            <div class="d-flex gap-1">
-                                <div class="flex-fill">
+                            <div class="row g-1">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Od</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_donijetood" />
                                 </div>
-                                <div class="flex-fill">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Do</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_donijetodo" />
                                 </div>
@@ -147,12 +153,12 @@
                         </div>
                         <div class="adv-group">
                             <label class="adv-label">Izvršno</label>
-                            <div class="d-flex gap-1">
-                                <div class="flex-fill">
+                            <div class="row g-1">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Od</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_izvrsnodanaod" />
                                 </div>
-                                <div class="flex-fill">
+                                <div class="col-12 col-lg-6">
                                     <small class="adv-label">Do</small>
                                     <input type="date" class="form-control dark-input adv-input" id="f_izvrsnodanado" />
                                 </div>
@@ -162,6 +168,104 @@
                             <label class="adv-label">Odlaganje do</label>
                             <input type="date" class="form-control dark-input adv-input" id="f_odlaganjedo" />
                         </div>
+                    </div>
+
+                </div>
+
+                <div class="sidebar-divider mt-3 mb-3"></div>
+
+                <!-- Pod-red 2: Sekundarni filteri (4 kolone, 2-col unutrašnji grid za duge sekcije) -->
+                <div class="row g-3">
+
+                    <!-- Status (2-col grid) -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="adv-title">Status</div>
+                        <div class="row g-1">
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Odlaganje</label>
+                                    <select class="form-select dark-input adv-select" id="f_odlaganje">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Odbačen</label>
+                                    <select class="form-select dark-input adv-select" id="f_odbacen">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Prekinut</label>
+                                    <select class="form-select dark-input adv-select" id="f_prekinut">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Odbijen</label>
+                                    <select class="form-select dark-input adv-select" id="f_odbijen">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Obustavljen</label>
+                                    <select class="form-select dark-input adv-select" id="f_obustavljen">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Mrtav</label>
+                                    <select class="form-select dark-input adv-select" id="f_mrtav">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Poravnanje</label>
+                                    <select class="form-select dark-input adv-select" id="f_poravnanje">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Zaključena</label>
+                                    <select class="form-select dark-input adv-select" id="f_zakljucena">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prigovor (1-col) -->
+                    <div class="col-sm-6 col-xl-3">
                         <div class="adv-title">Prigovor</div>
                         <div class="adv-group">
                             <label class="adv-label">Prigovor</label>
@@ -197,211 +301,183 @@
                         </div>
                     </div>
 
-                    <!-- Column 3: Status (8) + Imovina top (2) = 10 -->
-                    <div class="col-md-3">
-                        <div class="adv-title">Status</div>
-                        <div class="adv-group">
-                            <label class="adv-label">Odlaganje</label>
-                            <select class="form-select dark-input adv-select" id="f_odlaganje">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Odbačen</label>
-                            <select class="form-select dark-input adv-select" id="f_odbacen">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Prekinut</label>
-                            <select class="form-select dark-input adv-select" id="f_prekinut">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Odbijen</label>
-                            <select class="form-select dark-input adv-select" id="f_odbijen">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Obustavljen</label>
-                            <select class="form-select dark-input adv-select" id="f_obustavljen">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Mrtav</label>
-                            <select class="form-select dark-input adv-select" id="f_mrtav">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Poravnanje</label>
-                            <select class="form-select dark-input adv-select" id="f_poravnanje">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Zaključena</label>
-                            <select class="form-select dark-input adv-select" id="f_zakljucena">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-title">Imovina</div>
-                        <div class="adv-group">
-                            <label class="adv-label">Pokretna imovina</label>
-                            <select class="form-select dark-input adv-select" id="f_predlpokrimovina">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Nepokretna imovina</label>
-                            <select class="form-select dark-input adv-select" id="f_predlnepokimovina">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
+                    <!-- Izvršenje / Fakturisanje (2-col grid) -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="adv-title">Izvršenje / Fakturisanje</div>
+                        <div class="row g-1">
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Izv. rješ. suda</label>
+                                    <select class="form-select dark-input adv-select" id="f_izvrsnoResenjeSuda">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Prvostep. presuda</label>
+                                    <select class="form-select dark-input adv-select" id="f_prvostepenaPresuda">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Žalba</label>
+                                    <select class="form-select dark-input adv-select" id="f_zalba">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Drugostep. presuda</label>
+                                    <select class="form-select dark-input adv-select" id="f_drugostepenaPresuda">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Izv. po presudi</label>
+                                    <select class="form-select dark-input adv-select" id="f_izvrsenjePoPresudi">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Zaključak/Nalog</label>
+                                    <select class="form-select dark-input adv-select" id="f_zakljucaknalog">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Nisu postupili</label>
+                                    <select class="form-select dark-input adv-select" id="f_zakljucaknalognisupostupili">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Fakturisano</label>
+                                    <select class="form-select dark-input adv-select" id="f_fakturisano">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Fakturisati</label>
+                                    <select class="form-select dark-input adv-select" id="f_fakturisati">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Ne fakturisati</label>
+                                    <select class="form-select dark-input adv-select" id="f_nefakturisati">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Column 4: Izvršenje (10) + Imovina ostatak (5) = 15 -->
-                    <div class="col-md-3">
-                        <div class="adv-title">Izvršenje / Fakturisanje</div>
-                        <div class="adv-group">
-                            <label class="adv-label">Izvršno rješenje suda</label>
-                            <select class="form-select dark-input adv-select" id="f_izvrsnoResenjeSuda">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Prvostepena presuda</label>
-                            <select class="form-select dark-input adv-select" id="f_prvostepenaPresuda">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Žalba</label>
-                            <select class="form-select dark-input adv-select" id="f_zalba">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Drugostepena presuda</label>
-                            <select class="form-select dark-input adv-select" id="f_drugostepenaPresuda">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Izvršenje po presudi</label>
-                            <select class="form-select dark-input adv-select" id="f_izvrsenjePoPresudi">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Zaključak/Nalog</label>
-                            <select class="form-select dark-input adv-select" id="f_zakljucaknalog">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Nisu postupili</label>
-                            <select class="form-select dark-input adv-select" id="f_zakljucaknalognisupostupili">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Fakturisano</label>
-                            <select class="form-select dark-input adv-select" id="f_fakturisano">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Fakturisati</label>
-                            <select class="form-select dark-input adv-select" id="f_fakturisati">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Ne fakturisati</label>
-                            <select class="form-select dark-input adv-select" id="f_nefakturisati">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-title">Imovina (nastavak)</div>
-                        <div class="adv-group">
-                            <label class="adv-label">Hipoteka</label>
-                            <select class="form-select dark-input adv-select" id="f_hipoteka">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Nekretnina</label>
-                            <select class="form-select dark-input adv-select" id="f_nekretnina">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Vozila</label>
-                            <select class="form-select dark-input adv-select" id="f_vozila">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Zaposlen</label>
-                            <input type="text" class="form-control dark-input adv-input" id="f_zaposlen" />
-                        </div>
-                        <div class="adv-group">
-                            <label class="adv-label">Penzioner</label>
-                            <select class="form-select dark-input adv-select" id="f_penzioner">
-                                <option value="">Prikaži sve</option>
-                                <option value="true">Da</option>
-                                <option value="false">Ne</option>
-                            </select>
+                    <!-- Imovina — konsolidovano (2-col grid) -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="adv-title">Imovina</div>
+                        <div class="row g-1">
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Pokretna</label>
+                                    <select class="form-select dark-input adv-select" id="f_predlpokrimovina">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Nepokretna</label>
+                                    <select class="form-select dark-input adv-select" id="f_predlnepokimovina">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Hipoteka</label>
+                                    <select class="form-select dark-input adv-select" id="f_hipoteka">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Nekretnina</label>
+                                    <select class="form-select dark-input adv-select" id="f_nekretnina">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Vozila</label>
+                                    <select class="form-select dark-input adv-select" id="f_vozila">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="adv-group">
+                                    <label class="adv-label">Penzioner</label>
+                                    <select class="form-select dark-input adv-select" id="f_penzioner">
+                                        <option value="">Prikaži sve</option>
+                                        <option value="true">Da</option>
+                                        <option value="false">Ne</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="adv-group">
+                                    <label class="adv-label">Zaposlen</label>
+                                    <input type="text" class="form-control dark-input adv-input" id="f_zaposlen" />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

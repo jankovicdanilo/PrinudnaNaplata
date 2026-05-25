@@ -79,17 +79,17 @@ async function loadPartije() {
 }
 
 async function loadSudovi() {
-    const response = await fetch(`${API_URL}/court`,{
-        headers: {'Authorization': `Bearer ${getToken()}`}
+    const response = await fetch(`${API_URL}/court`, {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
     });
     const data = await response.json();
     const select = document.getElementById('f_sudid');
     data.data.forEach(sud => {
         const option = document.createElement('option');
-        option.value = sud.naziv;
+        option.value = sud.sudID;
         option.textContent = sud.naziv;
         select.appendChild(option);
-    })
+    });
 }
 
 function renderPagination(totalCount) {
@@ -189,6 +189,12 @@ document.getElementById('btnReset').addEventListener('click', () => {
 
 // remove btnLogout and navUsername lines
 initNavbar(() => { currentPage = 1; loadPartije(); });
+
+document.querySelectorAll('input[type="date"]').forEach(input => {
+    input.addEventListener('click', () => {
+        try { input.showPicker(); } catch (_) {}
+    });
+});
 
 loadPartije();
 loadSudovi();
