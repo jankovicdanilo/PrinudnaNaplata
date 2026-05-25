@@ -28,8 +28,11 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                 DuznikID,
                                 SUM(Coalesce(IznosPoPrigovoru, IznosDuga, 0))
                                 + SUM(Coalesce(ATPoPrigovoru,AdvTarifa, 0))
-                                + SUM(Coalesce(TaksaPoPrigovoru, SudskeTakse, 0)) as UkupnoDugovanje
+                                + SUM(Coalesce(TaksaPoPrigovoru, SudskeTakse, 0)) as UkupnoDugovanje,
+                                MIN(DugOd) as DugOd,
+                                MAX(DugDo) as DugDo
                             FROM Partije
+                            WHERE (@klijentID IS NULL OR @klijentID = 0 OR KlijentID = @klijentID)
                             GROUP BY DuznikID
                             ),
                             Filtered AS(
@@ -122,7 +125,8 @@ namespace PrinudnaNaplata.Repositories.Implementations
                                     (@Nekretnina IS NULL OR @Nekretnina = duznik.Nekretnina) AND
                                     (@Vozila IS NULL OR @Vozila = duznik.Vozila) AND
                                     (@Penzioner IS NULL OR @Penzioner = duznik.Penzioner) AND
-                                    (@UkupanDug IS NULL OR  dugovanja.UkupnoDugovanje >= @UkupanDug)
+                                    (@UkupanDug IS NULL OR  dugovanja.UkupnoDugovanje >= @UkupanDug) AND
+                                    (@klijentID IS NULL OR @klijentID = 0 OR partije.KlijentID = @klijentID)
                                 )
                                 SELECT 
                                     COUNT(*) OVER() as TotalCount,
@@ -193,7 +197,8 @@ namespace PrinudnaNaplata.Repositories.Implementations
                 Vozila = filter.Vozila,
                 Zaposlen = filter.Zaposlen,
                 Penzioner = filter.Penzioner,
-                UkupanDug = filter.UkupanDug
+                UkupanDug = filter.UkupanDug,
+                klijentID = filter.KlijentID
             });
 
             var items = result.ToList();

@@ -52,6 +52,7 @@ function getFilters() {
         Nekretnina: getBool('f_nekretnina'),
         Vozila: getBool('f_vozila'),
         Penzioner: getBool('f_penzioner'),
+        KlijentID: parseInt(localStorage.getItem('selectedKlijent')) || 0,
         PageNumber: currentPage,
         PageSize: pageSize
     };

@@ -18,8 +18,9 @@ function getFilters() {
         UkupanDug: document.getElementById('f_ukupandug').value || null,
         DugOd: document.getElementById('f_dugod').value || null,
         DugDo: document.getElementById('f_dugdo').value || null,
+        KlijentID: parseInt(localStorage.getItem('selectedKlijent')) || 0,
         PageNumber: currentPage,
-        PageSize: pageSize
+        PageSize: pageSize,
     };
 }
 
@@ -121,8 +122,7 @@ document.getElementById('btnPrikazi').addEventListener('click', () => {
 
 document.getElementById('btnReset').addEventListener('click', () => {
     document.querySelectorAll('.dark-input').forEach(el => {
-        if (el.tagName === 'SELECT') el.value = '';
-        else el.value = '';
+        el.value = '';
     });
     currentPage = 1;
     document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Unesite kriterije i kliknite Prikaži</td></tr>';
