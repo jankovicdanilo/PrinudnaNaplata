@@ -1,4 +1,11 @@
 
+let debounceTimer;
+
+function debounce(fn, delay = 400){
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fn, delay);
+}
+
 let currentPage = 1;
 
 function getFilters() {
@@ -52,8 +59,6 @@ function renderTable(duznici) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nema rezultata</td></tr>';
         return;
     }
-
-    document.getElementById('resultCount').textContent = `${duznici.length} rezultata`;
 
     tbody.innerHTML = duznici.map(d => `
         <tr>
@@ -125,10 +130,17 @@ document.getElementById('btnReset').addEventListener('click', () => {
         el.value = '';
     });
     currentPage = 1;
-    document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Unesite kriterije i kliknite Prikaži</td></tr>';
-    document.getElementById('resultCount').textContent = '';
-    document.getElementById('pagination').innerHTML = '';
+    loadDuznici();
 });
 
 initNavbar(() => { currentPage = 1; loadDuznici(); });
 loadDuznici();
+
+document.querySelectorAll('.dark-input').forEach(el => {
+    el.addEventListener('input', () => {
+        debounce(() =>{
+            currentPage = 1;
+            loadDuznici();
+        });
+    });
+});
