@@ -14,11 +14,41 @@ namespace PrinudnaNaplata.Controllers
     {
         private readonly IAuthService authService;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IConfiguration configuration;
+        private readonly IEmailService emailService;
 
-        public AuthController(IAuthService authService, UserManager<IdentityUser> userManager)
+        public AuthController(IAuthService authService, UserManager<IdentityUser> userManager, IConfiguration configuration, IEmailService emailService)
         {
             this.authService = authService;
             this.userManager = userManager;
+            this.configuration = configuration;
+            this.emailService = emailService;
+        }
+
+        [HttpPost("forgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordDto dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
+                return Ok(new { message = "Ako email postoji, link za reset je poslan." });
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Uri.EscapeDataString(token);
+            var frontendUrl = configuration["Frontend:BaseUrl"];
+            var resetLink = $"{frontendUrl}/reset-password.html?email={dto.Email}&token={encodedToken}";
+
+            try
+            {
+                await emailService.SendAsync(dto.Email, "Resetovanje lozinke", $"<a href='{resetLink}'>Reset</a>");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+            return Ok(new { message = "Ako email postoji, link za reset je poslan." });
         }
 
         [HttpPost("login")]
@@ -65,6 +95,17 @@ namespace PrinudnaNaplata.Controllers
             {
                 return BadRequest(new { result.Message, result.Errors });
             }
+
+            return Ok(result);
+        }
+
+        [HttpPut("resetPasswordWithToken")]
+        public async Task<IActionResult> ResetPasswordWithTokenAsync([FromBody] ResetPasswordWithTokenDto request)
+        {
+            var result = await authService.ResetPasswordWithTokenAsync(request.Email, request.Token, request.NewPassword);
+
+            if (!result.Success)
+                return BadRequest(new { result.Message, result.Errors });
 
             return Ok(result);
         }

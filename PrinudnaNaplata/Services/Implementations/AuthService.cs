@@ -44,7 +44,7 @@ namespace PrinudnaNaplata.Services.Implementations
                     return null;
                 }
 
-                return await BuildResponseAsync(existingUser);
+                return await BuildResponseAsync(existingUser, request.RememberMe);
             }
 
             //Step 2: Check old aspnet_Membership
@@ -96,7 +96,7 @@ namespace PrinudnaNaplata.Services.Implementations
                 }
             }
 
-            return await BuildResponseAsync(newUser);
+            return await BuildResponseAsync(newUser, request.RememberMe);
         }
 
         public async Task<Result<ChangePasswordResponseDto>> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
@@ -150,6 +150,29 @@ namespace PrinudnaNaplata.Services.Implementations
 
             return Result<ResetPasswordResponseDto>.Ok(response);
         }
+
+        public async Task<Result<string>> ResetPasswordWithTokenAsync(string email, string token, string newPassword)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if(user == null )
+            {
+                return Result<string>.Fail("USER_NOT_FOUND", "Nevažeći zahtjev.");
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, token, newPassword);
+
+            if (!result.Succeeded)
+            {
+                var errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
+                return Result<string>.Fail("RESET_PASSWORD_FAILED", errorMessage);
+            }
+
+            await userManager.UpdateSecurityStampAsync(user);
+
+            return Result<string>.Ok("Lozinka uspješno promijenjena.");
+        }
+
 
         // ── Private helpers ───────────────────────────────────────────────────────
 
@@ -248,10 +271,10 @@ namespace PrinudnaNaplata.Services.Implementations
 
         }
 
-        private async Task<LoginResponseDto> BuildResponseAsync(IdentityUser user)
+        private async Task<LoginResponseDto> BuildResponseAsync(IdentityUser user, bool rememberMe = false)
         {
             var roles = await userManager.GetRolesAsync(user);
-            var token = GenerateJwt(user, roles);
+            var token = GenerateJwt(user, roles, rememberMe);
 
             return new LoginResponseDto
             {
@@ -263,9 +286,10 @@ namespace PrinudnaNaplata.Services.Implementations
             };
         }
 
-        private string GenerateJwt(IdentityUser user, IList<string> roles)
+        private string GenerateJwt(IdentityUser user, IList<string> roles, bool rememberMe = false)
         {
             var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
+            var expiryMinutes = int.Parse(configuration["Jwt:ExpiryMinutes"] ?? "60");
 
             var claims = new List<Claim>
             {
@@ -278,12 +302,16 @@ namespace PrinudnaNaplata.Services.Implementations
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
+            var expires = rememberMe
+                ? DateTime.UtcNow.AddDays(30)
+                : DateTime.UtcNow.AddMinutes(expiryMinutes);
+
             var token = new JwtSecurityToken
                 (
                     issuer: configuration["Jwt:Issuer"],
                     audience: configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(30),
+                    expires: expires,
                     signingCredentials: credentials
                 );
 

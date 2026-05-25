@@ -8,12 +8,13 @@ document.getElementById('togglePwd').addEventListener('click', function () {
 document.getElementById('btnLogin').addEventListener('click', async function () {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
 
     try{
         const response = await fetch('https://localhost:7206/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({Username: username,Password: password })
+            body: JSON.stringify({Username: username,Password: password, rememberMe: rememberMe  })
         });
 
         if (response.ok) {
