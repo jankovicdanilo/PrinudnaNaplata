@@ -116,25 +116,6 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-    var testEmail = "jankovic.danilo23@gmail.com";
-    var existing = await userManager.FindByEmailAsync(testEmail);
-
-    if (existing == null)
-    {
-        var user = new IdentityUser
-        {
-            UserName = testEmail,
-            Email = testEmail,
-            EmailConfirmed = true
-        };
-        await userManager.CreateAsync(user, "Test123!");
-    }
-}
-
-using (var scope = app.Services.CreateScope())
-{
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     string[] roles = ["Administratori", "Korisnici"];
@@ -145,8 +126,6 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 }
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
