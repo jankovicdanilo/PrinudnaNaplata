@@ -11,5 +11,7 @@ namespace PrinudnaNaplata.Services.Interfaces
         Task<Result<ChangePasswordResponseDto>> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
 
         Task<Result<ResetPasswordResponseDto>> ResetPasswordAsync(string userId, string newPassword);
+
+        Task<Result<string>> ResetPasswordWithTokenAsync(string email, string token, string newPassword);
     }
 }

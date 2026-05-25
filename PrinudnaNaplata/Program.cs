@@ -25,6 +25,7 @@ builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -112,6 +113,25 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    var testEmail = "jankovic.danilo23@gmail.com";
+    var existing = await userManager.FindByEmailAsync(testEmail);
+
+    if (existing == null)
+    {
+        var user = new IdentityUser
+        {
+            UserName = testEmail,
+            Email = testEmail,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(user, "Test123!");
+    }
+}
 
 using (var scope = app.Services.CreateScope())
 {
