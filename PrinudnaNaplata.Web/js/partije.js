@@ -189,5 +189,11 @@ document.getElementById('btnReset').addEventListener('click', () => {
 // remove btnLogout and navUsername lines
 initNavbar(() => { currentPage = 1; loadPartije(); });
 
+document.querySelectorAll('input[type="date"]').forEach(input => {
+    input.addEventListener('click', () => {
+        try { input.showPicker(); } catch (_) {}
+    });
+});
+
 loadPartije();
 loadSudovi();
